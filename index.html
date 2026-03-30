@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Des Romanis Unofficial</title>
+    <style>
+        body { background: #050505; color: #eee; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; margin: 0; padding-top: 60px; }
+        
+        /* ClementWeb CSS Logo */
+        .logo { font-weight: 900; font-size: 2.5rem; letter-spacing: -1px; display: flex; align-items: center; gap: 5px; margin-bottom: 50px; cursor: default; }
+        .logo span { color: #007bff; border: 2px solid #007bff; padding: 0 8px; border-radius: 4px; }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 20px; 
+            width: 90%; 
+            max-width: 800px; 
+        }
+
+        .card { 
+            background: #0d0d0d; border: 1px solid #1a1a1a; padding: 25px; border-radius: 8px; 
+            text-decoration: none; color: inherit; transition: 0.25s ease; position: relative;
+        }
+        .card:hover { border-color: #007bff; background: #111; transform: translateY(-3px); }
+        
+        .card h2 { margin: 0 0 8px 0; font-size: 0.9rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+        .card p { margin: 0; font-size: 0.75rem; color: #555; line-height: 1.4; }
+        
+        /* Link Indicator */
+        .card::after { content: '→'; position: absolute; bottom: 15px; right: 15px; color: #222; font-size: 1.2rem; transition: 0.2s; }
+        .card:hover::after { color: #007bff; }
+
+        .footer { margin-top: 60px; font-size: 0.6rem; color: #222; letter-spacing: 4px; text-transform: uppercase; padding-bottom: 40px; }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="logo">DesRomanis<span>Unofficial</span></div>
+
+    <div class="grid">
+        <a href="https://garzryp.github.io/Aim-Trainer/" class="card" target="_blank">
+            <h2>Vocab Tester (1-8)</h2>
+            <p>Vocabulary tester for chapters 1-8 of the des romanis crap</p>
+        </a>
+
+        <a href="https://garzryp.github.io/CPStrainer/" class="card" target="_blank">
+            <h2>Grammar Tables Tester</h2>
+            <p>Grammar tester for all latin tables up to stage 23</p>
+        </a>
+    </div>
+
+    <div class="footer">© 2026 DESROMANISUNOFFICIAL • TESTER</div>
+
+</body>
+</html>
