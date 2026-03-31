@@ -119,6 +119,14 @@
         
         // Ensure we start on the home screen
         goHome();
+        // Closes the menus
+        const menus = ['vocab-menu', 'grammar-menu', 'extra-menu'];
+        menus.forEach(id => {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(id + '-arrow');
+            if (menu) menu.classList.add('collapsed');
+            if (arrow) arrow.classList.add('collapsed-arrow');
+        });
     };
 </script>
 
