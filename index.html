@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>De Romanis Unofficial | Latin Mastery</title>
-    <style>
+    <style>        /*style block*/
         :root {
             --bg: #0d1117; --side: #161b22; --card: #1c1f26; --text: #c9d1d9;
             --accent: #58a6ff; --border: #30363d; --err: #f85149; --ok: #3fb950; --gold: #d29922;
@@ -15,11 +15,18 @@
         body.custom-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: -1; }
 
         .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; z-index: 10; }
-        .sidebar h2 { font-size: 0.8rem; color: #8b949e; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar h2 { font-size: 0.8rem; color: #8b949e; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .sidebar h2:hover { color: var(--accent); }
+        .sidebar h2 span { font-size: 0.6rem; transition: transform 0.3s; }
+        
         .title-link { text-decoration: none; color: var(--accent); transition: 0.2s; }
-        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; width: 100%; }
         .nav-btn:hover { background: #21262d; color: var(--accent); }
         .nav-btn.active { background: #1f6feb; color: white; font-weight: bold; }
+
+        .content { display: flex; flex-direction: column; gap: 5px; overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease-out, opacity 0.3s; }
+        .content.collapsed { max-height: 0; opacity: 0; pointer-events: none; }
+        .collapsed-arrow { transform: rotate(-90deg); }
 
         .main { flex: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; align-items: center; position: relative; }
         .container { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 900px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: none; }
@@ -35,7 +42,8 @@
 
         .vocab-ui { text-align: center; max-width: 500px; margin: 0 auto; }
         .latin-word { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 20px 0; }
-        .vocab-input { width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 8px; border: 2px solid var(--border); background: #0d1117; color: white; outline: none; text-align: center; }
+        .vocab-input { width: 100%; padding: 12px; font-size: 1.1rem; border-radius: 8px; border: 2px solid var(--border); background: #0d1117; color: white; outline: none; text-align: center; margin-bottom: 10px; }
+        
         #timer-container { width: 100%; height: 8px; background: #111827; border-radius: 4px; margin-bottom: 20px; overflow: hidden; display: none; }
         #timer-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
         .feedback { font-weight: 600; margin: 10px 0; min-height: 1.5rem; }
@@ -44,43 +52,54 @@
         .stats { font-size: 0.8rem; color: #8b949e; text-transform: uppercase; margin-top: 10px; }
 
         .btn-box { display: flex; gap: 15px; margin-top: 30px; justify-content: center; }
-        button.action { background: #21262d; color: var(--accent); border: 1px solid var(--border); padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button.action { background: #21262d; color: var(--accent); border: 1px solid var(--border); padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button.action:hover { background: #30363d; }
         button.check { background: var(--accent); color: white; border: none; }
         
-        .theme-picker { display: flex; gap: 12px; justify-content: center; margin-top: 15px; }
-        .theme-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
-        .hidden { display: none; }
+        .theme-picker { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+        .theme-dot { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.2s; }
+        .theme-dot:hover { transform: scale(1.1); }
         .ans-hint { display: block; font-size: 0.75rem; color: var(--err); margin-top: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <a href="https://garzryp.github.io/desromanisunofficial/" class="title-link">
+    <a href="https://garzryp.github.io/desromanisunofficial/" class="title-link">    <!-- this links back to itself so is kinda useless -->
         <h1 style="font-size: 1.1rem; margin-bottom: 20px;">🏛️ De Romanis Unofficial</h1>
     </a>
     
-    <h2>Vocabulary</h2>
-    <button class="nav-btn" onclick="openVocab([1,2,3,4,5,6,7,8])">All Chapters</button>
-    <button class="nav-btn" onclick="openVocab([1,2,3,4])">CH 1-4</button>
-    <button class="nav-btn" onclick="openVocab([5,6,7,8])">CH 5-8</button>
+    <h2 onclick="toggleSection('vocab-menu')">Vocabulary <span id="vocab-menu-arrow">▼</span></h2>   <!--collapsible-->
+    <div id="vocab-menu" class="content">
+        <button class="nav-btn" onclick="openVocab([1])">Chapter 1</button>
+        <button class="nav-btn" onclick="openVocab([2])">Chapter 2</button>
+        <button class="nav-btn" onclick="openVocab([3])">Chapter 3</button>
+        <button class="nav-btn" onclick="openVocab([4])">Chapter 4</button>
+        <button class="nav-btn" onclick="openVocab([5])">Chapter 5</button>
+        <button class="nav-btn" onclick="openVocab([6])">Chapter 6</button>
+        <button class="nav-btn" onclick="openVocab([7])">Chapter 7</button>
+        <button class="nav-btn" onclick="openVocab([8])">Chapter 8</button>
+        <button class="nav-btn" onclick="openVocab([1,2,3,4])">CH 1-4</button>
+        <button class="nav-btn" onclick="openVocab([5,6,7,8])">CH 5-8</button>
+        <button class="nav-btn" onclick="openVocab([1,2,3,4,5,6,7,8])">All Chapters</button>
+    </div>
 
-    <h2>Grammar: Perfect</h2>
-    <button class="nav-btn active" onclick="loadGrammar('perf-sys')">Perfect & Pluperfect</button>
-    
-    <h2>Grammar: Present</h2>
-    <button class="nav-btn" onclick="loadGrammar('verb-pres')">Present Indicative</button>
-    <button class="nav-btn" onclick="loadGrammar('verb-impf')">Imperfect Indicative</button>
-    <button class="nav-btn" onclick="loadGrammar('verb-subj')">Imperfect Subjunctive</button>
-    
-    <h2>Irregulars</h2>
-    <button class="nav-btn" onclick="loadGrammar('irr-eo')">Eo, Ire</button>
-    <button class="nav-btn" onclick="loadGrammar('irr-volo')">Volo & Nolo</button>
-    
-    <h2>Pronouns</h2>
-    <button class="nav-btn" onclick="loadGrammar('pro-pers')">Personal (Ego/Tu)</button>
-    <button class="nav-btn" onclick="loadGrammar('pro-demo')">Is, Ea, Id</button>
-    <button class="nav-btn" onclick="loadGrammar('pro-hic')">Hic & Ille</button>
+    <h2 onclick="toggleSection('grammar-menu')">Grammar <span id="grammar-menu-arrow">▼</span></h2>   <!--collapsible-->
+    <div id="grammar-menu" class="content">
+        <button class="nav-btn active" onclick="loadGrammar('perf-sys')">Perfect & Pluperfect</button>
+        <button class="nav-btn" onclick="loadGrammar('verb-pres')">Present Indicative</button>
+        <button class="nav-btn" onclick="loadGrammar('verb-impf')">Imperfect Indicative</button>
+        <button class="nav-btn" onclick="loadGrammar('verb-subj')">Imperfect Subjunctive</button>
+    </div>
+
+    <h2 onclick="toggleSection('extra-menu')">Extras <span id="extra-menu-arrow">▼</span></h2>   <!-- pretty much just more grammar but i didnt wanna call it that-->
+    <div id="extra-menu" class="content">
+        <button class="nav-btn" onclick="loadGrammar('irr-eo')">Eo, Ire</button>
+        <button class="nav-btn" onclick="loadGrammar('irr-volo')">Volo & Nolo</button>
+        <button class="nav-btn" onclick="loadGrammar('pro-pers')">Personal (Ego/Tu)</button>
+        <button class="nav-btn" onclick="loadGrammar('pro-demo')">Is, Ea, Id</button>
+        <button class="nav-btn" onclick="loadGrammar('pro-hic')">Hic & Ille</button>
+    </div>
 </div>
 
 <div class="main">
@@ -100,21 +119,31 @@
     <div id="vocab-container" class="container">
         <div class="vocab-ui">
             <h1 id="vocab-title">Vocabulary Tester</h1>
-            <div id="vocab-quiz-screen">
+            
+            <div id="vocab-setup-screen">
+                <p>Enter a URL for a custom background, pick a slot, and save.</p>     <!-- uses local storages -->
+                <input type="text" id="bg-url-input" class="vocab-input" placeholder="Paste image URL here...">
+                <div class="theme-picker">
+                    <div class="theme-dot" onclick="setTheme('default')" style="background: #0d1117;"></div>
+                    <div class="theme-dot" onclick="setTheme('slot1')" style="background: #374151;"></div>
+                    <div class="theme-dot" onclick="setTheme('slot2')" style="background: #374151;"></div>
+                </div>
+                <button class="action" onclick="saveToSlot()" style="margin-bottom: 20px;">Save to Selected Slot</button>
+                <div style="margin-top:10px; font-size:0.9rem;">
+                    <label><input type="checkbox" id="timer-toggle"> Enable Sudden Death Timer</label>     <!-- goes from 10s and slowly gets faster-->
+                </div>
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+                <p style="color: var(--accent);">Select a Chapter from the sidebar to begin!</p>
+            </div>
+
+            <div id="vocab-quiz-screen" style="display:none;">
                 <div id="timer-container"><div id="timer-bar"></div></div>
                 <div class="stats" id="progress">WORD 1 OF X</div>
                 <div class="latin-word" id="display-latin">---</div>
                 <div class="feedback" id="feedback"></div>
                 <input type="text" id="answer-input" class="vocab-input" placeholder="Type meaning..." autocomplete="off">
                 <div class="stats" id="score-display">STREAK: 0</div>
-                <div class="theme-picker" style="margin-top:20px;">
-                    <div class="theme-dot" onclick="setTheme('default')" style="background: #0f111a;"></div>
-                    <div class="theme-dot" onclick="setTheme('slot1')" style="background: #374151;"></div>
-                    <div class="theme-dot" onclick="setTheme('slot2')" style="background: #374151;"></div>
-                </div>
-                <div style="margin-top:10px; font-size:0.8rem;">
-                    <label><input type="checkbox" id="timer-toggle"> Sudden Death Timer</label>
-                </div>
+                <button class="action" onclick="showSetup()" style="margin-top: 20px;">Quit Session</button>
             </div>
         </div>
     </div>
@@ -144,13 +173,14 @@
         'pro-hic': { title: "Hic & Ille (Nom/Acc)", heads: ["Case", "Hic (M)", "Hic (F)", "Ille (M)", "Ille (F)"], labels: ["Nom S","Acc S","Nom P","Acc P"], keys: [["hic","haec","ille","illa"], ["hunc","hanc","illum","illam"], ["hi","hae","illi","illae"], ["hos","has","illos","illas"]] }
     };
 
-    let curG = 'perf-sys', vPool = [], vIdx = 0, vScore = 0, isVProc = false, timer;
+    let curG = 'perf-sys', vPool = [], vIdx = 0, vScore = 0, timer;
+    let selectedSlot = 'slot1';
 
     function loadGrammar(id) {
         document.getElementById('vocab-container').classList.remove('active');
         document.getElementById('grammar-container').classList.add('active');
         curG = id; const config = grammarLibrary[id];
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(id.split('-')[0])));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('view-title').innerText = config.title;
         document.getElementById('instruction-container').innerHTML = config.info ? `<div class="instruction-box">💡 <b>Rule:</b> ${config.info}</div>` : '';
         document.getElementById('table-head').innerHTML = `<tr>${config.heads.map(h => `<th>${h}</th>`).join('')}</tr>`;
@@ -190,16 +220,32 @@
 
     function resetGrammar() { loadGrammar(curG); }
 
+    function showSetup() {
+        clearInterval(timer);
+        document.getElementById('vocab-setup-screen').style.display = 'block';
+        document.getElementById('vocab-quiz-screen').style.display = 'none';
+        document.getElementById('timer-container').style.display = 'none';
+    }
+
     function openVocab(chs) {
         document.getElementById('grammar-container').classList.remove('active');
         document.getElementById('vocab-container').classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('vocab-setup-screen').style.display = 'none';
+        document.getElementById('vocab-quiz-screen').style.display = 'block';
+        
         vPool = chs.flatMap(c => vocabLibrary[c]).sort(() => Math.random() - 0.5);
-        vIdx = 0; vScore = 0; showVWord();
+        vIdx = 0; vScore = 0; 
+        document.getElementById('score-display').innerText = "STREAK: 0";
+        showVWord();
     }
 
     function showVWord() {
-        if (vIdx >= vPool.length) { document.getElementById('vocab-quiz-screen').innerHTML = `<h1>Complete!</h1><p>Streak: ${vScore}</p><button class="action" onclick="location.reload()">Reset</button>`; return; }
+        if (vIdx >= vPool.length) { 
+            document.getElementById('display-latin').innerText = "Session Complete!";
+            document.getElementById('answer-input').style.display = 'none';
+            return; 
+        }
+        document.getElementById('answer-input').style.display = 'block';
         document.getElementById('progress').innerText = `WORD ${vIdx + 1} OF ${vPool.length}`;
         document.getElementById('display-latin').innerText = vPool[vIdx].l;
         const i = document.getElementById('answer-input'); i.value = ""; i.focus();
@@ -208,7 +254,17 @@
 
     function startVTimer() {
         clearInterval(timer); document.getElementById('timer-container').style.display = 'block';
-        let rem = 100; timer = setInterval(() => { rem -= 2; document.getElementById('timer-bar').style.width = rem + '%'; if(rem <= 0) { clearInterval(timer); vIdx++; showVWord(); } }, 100);
+        let rem = 100; timer = setInterval(() => { 
+            rem -= 2; 
+            document.getElementById('timer-bar').style.width = rem + '%'; 
+            if(rem <= 0) { 
+                clearInterval(timer); 
+                document.getElementById('feedback').innerText = `TIMEOUT: ${vPool[vIdx].e}`;
+                document.getElementById('feedback').className = "feedback incorrect";
+                vScore = 0; vIdx++; 
+                setTimeout(() => { document.getElementById('feedback').innerText = ""; showVWord(); }, 1500);
+            } 
+        }, 100);
     }
 
     document.getElementById('answer-input').addEventListener('keypress', e => {
@@ -216,19 +272,56 @@
             const val = e.target.value.toLowerCase().trim();
             const correct = vPool[vIdx].e.toLowerCase().split(',').map(s => s.trim());
             const f = document.getElementById('feedback');
-            if (correct.includes(val)) { f.innerText = "CORRECT!"; f.className = "feedback correct"; vScore++; vIdx++; setTimeout(() => { f.innerText = ""; showVWord(); }, 600); }
-            else { f.innerText = `WRONG: ${vPool[vIdx].e}`; f.className = "feedback incorrect"; vScore = 0; vIdx++; setTimeout(() => { f.innerText = ""; showVWord(); }, 2000); }
+            clearInterval(timer);
+
+            if (correct.includes(val)) { 
+                f.innerText = "CORRECT!"; f.className = "feedback correct"; vScore++; vIdx++; 
+                setTimeout(() => { f.innerText = ""; showVWord(); }, 600); 
+            } else { 
+                f.innerText = `WRONG: ${vPool[vIdx].e}`; f.className = "feedback incorrect"; vScore = 0; vIdx++; 
+                setTimeout(() => { f.innerText = ""; showVWord(); }, 2000); 
+            }
             document.getElementById('score-display').innerText = `STREAK: ${vScore}`;
         }
     });
 
     function setTheme(slot) {
+        selectedSlot = slot;
         const url = localStorage.getItem(`latin-url-${slot}`);
-        if(url) { document.body.classList.add('custom-bg'); document.body.style.backgroundImage = `url('${url}')`; }
-        else { document.body.classList.remove('custom-bg'); document.body.style.backgroundImage = 'none'; }
+        if(url && slot !== 'default') { 
+            document.body.classList.add('custom-bg'); 
+            document.body.style.backgroundImage = `url('${url}')`; 
+        } else { 
+            document.body.classList.remove('custom-bg'); 
+            document.body.style.backgroundImage = 'none'; 
+        }
     }
 
-    window.onload = () => loadGrammar('perf-sys');
+    function saveToSlot() {
+        const url = document.getElementById('bg-url-input').value.trim();
+        if (selectedSlot === 'default') {
+            alert("Cannot save to Default slot. Please select Slot 1 or Slot 2.");
+            return;
+        }
+        if (url) {
+            localStorage.setItem(`latin-url-${selectedSlot}`, url);
+            setTheme(selectedSlot);
+            alert("Background saved!");
+        }
+    }
+
+    function toggleSection(id) {
+        const menu = document.getElementById(id);
+        const arrow = document.getElementById(id + '-arrow');
+        menu.classList.toggle('collapsed');
+        arrow.classList.toggle('collapsed-arrow');
+    }
+
+    window.onload = () => {
+        loadGrammar('perf-sys');
+        // Initial state for sections
+        toggleSection('extra-menu');
+    };
 </script>
 </body>
 </html>
