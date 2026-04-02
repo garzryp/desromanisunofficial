@@ -209,6 +209,7 @@ const vocabLibrary = {
     let curG = 'perf-sys', vPool = [], vIdx = 0, vScore = 0, timer;
     let selectedSlot = 'slot1';
 
+    // --- NAVIGATION ---
     function goHome() {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.getElementById('home-container').classList.add('active');
@@ -216,27 +217,98 @@ const vocabLibrary = {
         clearInterval(timer);
     }
 
+    function toggleSection(id) {
+        const menu = document.getElementById(id);
+        const arrow = document.getElementById(id + '-arrow');
+        if (menu) menu.classList.toggle('collapsed');
+        if (arrow) arrow.classList.toggle('collapsed-arrow');
+    }
+
+    // --- BACKGROUND THEME LOGIC ---
+    function setTheme(slot) {
+        selectedSlot = slot;
+        const url = localStorage.getItem(`latin-url-${slot}`);
+        const inputField = document.getElementById('bg-url-input');
+
+        if (url && slot !== 'default') {
+            document.body.classList.add('custom-bg');
+            document.body.style.backgroundImage = `url('${url}')`;
+            if (inputField) inputField.value = url;
+        } else {
+            document.body.classList.remove('custom-bg');
+            document.body.style.backgroundImage = 'none';
+            if (inputField) inputField.value = '';
+        }
+    }
+
+    function saveToSlot() {
+        const urlInput = document.getElementById('bg-url-input').value.trim();
+        if (selectedSlot === 'default') {
+            alert("Select Slot 1 or Slot 2 dot first to save!");
+            return;
+        }
+        if (urlInput) {
+            localStorage.setItem(`latin-url-${selectedSlot}`, urlInput);
+            setTheme(selectedSlot);
+            alert(`Saved to ${selectedSlot.toUpperCase()}!`);
+        } else {
+            localStorage.removeItem(`latin-url-${selectedSlot}`);
+            setTheme('default');
+            alert("Slot cleared.");
+        }
+    }
+
+    // --- GRAMMAR LOGIC ---
     function loadGrammar(id) {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.getElementById('grammar-container').classList.add('active');
-        curG = id; const config = grammarLibrary[id];
+        curG = id; 
+        const config = grammarLibrary[id];
         
-        document.querySelectorAll('.nav-btn').forEach(b => {
-            b.classList.toggle('active', b.getAttribute('onclick')?.includes(`'${id}'`));
-        });
-
         document.getElementById('view-title').innerText = config.title;
         document.getElementById('instruction-container').innerHTML = config.info ? `<div class="instruction-box">💡 <b>Rule:</b> ${config.info}</div>` : '';
         document.getElementById('table-head').innerHTML = `<tr>${config.heads.map(h => `<th>${h}</th>`).join('')}</tr>`;
-        const body = document.getElementById('table-body'); body.innerHTML = '';
+        
+        const body = document.getElementById('table-body'); 
+        body.innerHTML = '';
         const rows = config.labels || ["1s", "2s", "3s", "1p", "2p", "3p"];
+        
         config.keys.forEach((row, r) => {
             let html = `<tr><td><b>${rows[r]}</b></td>`;
-            row.forEach((val, c) => html += `<td><div id="cell-${r}-${c}"><input type="text" class="grammar-input" id="ans-${r}-${c}" autocomplete="off"></div></td>`);
+            row.forEach((val, c) => {
+                html += `<td><div id="cell-${r}-${c}"><input type="text" class="grammar-input" id="ans-${r}-${c}" autocomplete="off"></div></td>`;
+            });
             body.innerHTML += html + `</tr>`;
         });
     }
 
+    function checkGrammar() {
+        const config = grammarLibrary[curG];
+        config.keys.forEach((row, r) => {
+            row.forEach((correctVal, c) => {
+                const input = document.getElementById(`ans-${r}-${c}`);
+                const cell = document.getElementById(`cell-${r}-${c}`);
+                const userVal = input.value.trim().toLowerCase();
+                
+                // Clear old hints
+                const oldHint = cell.querySelector('.ans-hint');
+                if (oldHint) oldHint.remove();
+
+                if (userVal === correctVal.toLowerCase()) {
+                    input.style.color = "var(--ok)";
+                } else {
+                    input.style.color = "var(--err)";
+                    cell.innerHTML += `<span class="ans-hint">${correctVal}</span>`;
+                }
+            });
+        });
+    }
+
+    function resetGrammar() {
+        loadGrammar(curG);
+    }
+
+    // --- VOCABULARY LOGIC ---
     function openVocab(chs) {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.getElementById('vocab-container').classList.add('active');
@@ -252,95 +324,17 @@ const vocabLibrary = {
             document.getElementById('answer-input').style.display = 'none';
             return; 
         }
-        document.getElementById('answer-input').style.display = 'block';
-        document.getElementById('progress').innerText = `WORD ${vIdx + 1} OF ${vPool.length}`;
         document.getElementById('display-latin').innerText = vPool[vIdx].l;
-        const i = document.getElementById('answer-input'); i.value = ""; i.focus();
-        if(document.getElementById('timer-toggle').checked) startVTimer();
+        document.getElementById('answer-input').value = "";
+        document.getElementById('answer-input').focus();
     }
 
-    function startVTimer() {
-        clearInterval(timer); document.getElementById('timer-container').style.display = 'block';
-        let rem = 100; timer = setInterval(() => { 
-            rem -= 2; document.getElementById('timer-bar').style.width = rem + '%'; 
-            if(rem <= 0) { 
-                clearInterval(timer); 
-                vIdx++; showVWord();
-            } 
-        }, 100);
-    }
-
-    document.getElementById('answer-input').addEventListener('keypress', e => {
-        if (e.key === 'Enter') {
-            const val = e.target.value.toLowerCase().trim();
-            const correct = vPool[vIdx].e.toLowerCase().split(',').map(s => s.trim());
-            const f = document.getElementById('feedback');
-            clearInterval(timer);
-
-            if (correct.includes(val)) { 
-                f.innerText = "CORRECT!"; f.className = "feedback correct"; vScore++; vIdx++; 
-                setTimeout(() => { f.innerText = ""; showVWord(); }, 600); 
-            } else { 
-                f.innerText = `WRONG: ${vPool[vIdx].e}`; f.className = "feedback incorrect"; vScore = 0; vIdx++; 
-                setTimeout(() => { f.innerText = ""; showVWord(); }, 2000); 
-            }
-            document.getElementById('score-display').innerText = `STREAK: ${vScore}`;
-        }
-    });
-
-    function setTheme(slot) {
-        selectedSlot = slot;
-        const url = localStorage.getItem(`latin-url-${slot}`);
-        const inputField = document.getElementById('bg-url-input');
-        if (url && slot !== 'default') {
-            document.body.classList.add('custom-bg');
-            document.body.style.backgroundImage = `url('${url}')`;
-            if (inputField) inputField.value = url;
-        } else {
-            document.body.classList.remove('custom-bg');
-            document.body.style.backgroundImage = 'none';
-            if (inputField) inputField.value = '';
-        }
-    }
-
-    function saveToSlot() {
-        const url = document.getElementById('bg-url-input').value.trim();
-        if (selectedSlot === 'default') {
-            alert("Select Slot 1 or Slot 2 dot first to save!");
-            return;
-        }
-        if (url) {
-            localStorage.setItem(`latin-url-${selectedSlot}`, url);
-            document.body.classList.add('custom-bg');
-            document.body.style.backgroundImage = `url('${url}')`;
-            alert(`Saved to ${selectedSlot.toUpperCase()}!`);
-        } else {
-            localStorage.removeItem(`latin-url-${selectedSlot}`);
-            setTheme('default');
-            alert("Slot cleared.");
-        }
-    }
-
-    function toggleSection(id) {
-        const menu = document.getElementById(id);
-        const arrow = document.getElementById(id + '-arrow');
-        menu.classList.toggle('collapsed');
-        arrow.classList.toggle('collapsed-arrow');
-    }
-
+    // --- INITIALIZATION ---
     window.onload = () => {
         const lastUsed = localStorage.getItem('latin-url-slot1') ? 'slot1' : 
                          localStorage.getItem('latin-url-slot2') ? 'slot2' : 'default';
         setTheme(lastUsed);
         goHome();
-
-        const menus = ['vocab-menu', 'grammar-menu', 'extra-menu'];
-        menus.forEach(id => {
-            const menu = document.getElementById(id);
-            const arrow = document.getElementById(id + '-arrow');
-            if (menu) menu.classList.add('collapsed');
-            if (arrow) arrow.classList.add('collapsed-arrow');
-        });
     };
 </script>
 </body>
