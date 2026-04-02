@@ -183,7 +183,7 @@
 </div>
 
 <script>
-const vocabLibrary = {
+    const vocabLibrary = {
         1: [{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}],
         2: [{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}],
         3: [{l:"ā, ab",e:"from, away from, by"},{l:"ascendō",e:"climb"},{l:"audiō",e:"hear, listen to"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"caelum",e:"sky, heaven"},{l:"celeriter",e:"quickly"},{l:"cōnspiciō",e:"catch sight of, notice"},{l:"cum",e:"with, when"},{l:"dē",e:"from, down from, about"},{l:"dēscendō",e:"go down, come down, descend"},{l:"difficilis",e:"difficult"},{l:"diū",e:"for a long time"},{l:"ē, ex",e:"from, out of, out from"},{l:"equus",e:"horse"},{l:"facilis",e:"easy"},{l:"fēlīx",e:"fortunate, happy, lucky"},{l:"in",e:"in, on, onto, into"},{l:"iubeō",e:"order"},{l:"magnus",e:"big, large, great"},{l:"malus",e:"evil, bad"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"ōlim",e:"once, some time ago"},{l:"petō",e:"make for, seek, beg, ask for"},{l:"possum",e:"can, be able"},{l:"pugnō",e:"fight"},{l:"subitō",e:"suddenly"},{l:"tandem",e:"at last, finally"},{l:"terra",e:"ground, land, country, earth"}],
@@ -209,7 +209,6 @@ const vocabLibrary = {
     let curG = 'perf-sys', vPool = [], vIdx = 0, vScore = 0, timer;
     let selectedSlot = 'slot1';
 
-    // --- NAVIGATION ---
     function goHome() {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.getElementById('home-container').classList.add('active');
@@ -224,7 +223,7 @@ const vocabLibrary = {
         if (arrow) arrow.classList.toggle('collapsed-arrow');
     }
 
-    // --- BACKGROUND THEME LOGIC ---
+    // --- BACKGROUND LOGIC ---
     function setTheme(slot) {
         selectedSlot = slot;
         const url = localStorage.getItem(`latin-url-${slot}`);
@@ -244,7 +243,7 @@ const vocabLibrary = {
     function saveToSlot() {
         const urlInput = document.getElementById('bg-url-input').value.trim();
         if (selectedSlot === 'default') {
-            alert("Select Slot 1 or Slot 2 dot first to save!");
+            alert("Select Slot 1 or Slot 2 dot first!");
             return;
         }
         if (urlInput) {
@@ -289,8 +288,6 @@ const vocabLibrary = {
                 const input = document.getElementById(`ans-${r}-${c}`);
                 const cell = document.getElementById(`cell-${r}-${c}`);
                 const userVal = input.value.trim().toLowerCase();
-                
-                // Clear old hints
                 const oldHint = cell.querySelector('.ans-hint');
                 if (oldHint) oldHint.remove();
 
@@ -298,15 +295,16 @@ const vocabLibrary = {
                     input.style.color = "var(--ok)";
                 } else {
                     input.style.color = "var(--err)";
-                    cell.innerHTML += `<span class="ans-hint">${correctVal}</span>`;
+                    const hint = document.createElement('span');
+                    hint.className = 'ans-hint';
+                    hint.innerText = correctVal;
+                    cell.appendChild(hint);
                 }
             });
         });
     }
 
-    function resetGrammar() {
-        loadGrammar(curG);
-    }
+    function resetGrammar() { loadGrammar(curG); }
 
     // --- VOCABULARY LOGIC ---
     function openVocab(chs) {
@@ -329,7 +327,7 @@ const vocabLibrary = {
         document.getElementById('answer-input').focus();
     }
 
-    // --- INITIALIZATION ---
+    // --- ON LOAD ---
     window.onload = () => {
         const lastUsed = localStorage.getItem('latin-url-slot1') ? 'slot1' : 
                          localStorage.getItem('latin-url-slot2') ? 'slot2' : 'default';
