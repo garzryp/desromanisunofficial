@@ -183,7 +183,7 @@
 </div>
 
 <script>
-    const vocabLibrary = {
+const vocabLibrary = {
         1: [{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}],
         2: [{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}],
         3: [{l:"ā, ab",e:"from, away from, by"},{l:"ascendō",e:"climb"},{l:"audiō",e:"hear, listen to"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"caelum",e:"sky, heaven"},{l:"celeriter",e:"quickly"},{l:"cōnspiciō",e:"catch sight of, notice"},{l:"cum",e:"with, when"},{l:"dē",e:"from, down from, about"},{l:"dēscendō",e:"go down, come down, descend"},{l:"difficilis",e:"difficult"},{l:"diū",e:"for a long time"},{l:"ē, ex",e:"from, out of, out from"},{l:"equus",e:"horse"},{l:"facilis",e:"easy"},{l:"fēlīx",e:"fortunate, happy, lucky"},{l:"in",e:"in, on, onto, into"},{l:"iubeō",e:"order"},{l:"magnus",e:"big, large, great"},{l:"malus",e:"evil, bad"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"ōlim",e:"once, some time ago"},{l:"petō",e:"make for, seek, beg, ask for"},{l:"possum",e:"can, be able"},{l:"pugnō",e:"fight"},{l:"subitō",e:"suddenly"},{l:"tandem",e:"at last, finally"},{l:"terra",e:"ground, land, country, earth"}],
@@ -221,7 +221,6 @@
         document.getElementById('grammar-container').classList.add('active');
         curG = id; const config = grammarLibrary[id];
         
-        // Highlight active button
         document.querySelectorAll('.nav-btn').forEach(b => {
             b.classList.toggle('active', b.getAttribute('onclick')?.includes(`'${id}'`));
         });
@@ -233,7 +232,7 @@
         const rows = config.labels || ["1s", "2s", "3s", "1p", "2p", "3p"];
         config.keys.forEach((row, r) => {
             let html = `<tr><td><b>${rows[r]}</b></td>`;
-            row.forEach((val, c) => html += `<td><div id="cell-${r}-${c}"><input type="text" class="grammar-input" id="ans-${r}-${c}" data-row="${r}" data-col="${c}" autocomplete="off"></div></td>`);
+            row.forEach((val, c) => html += `<td><div id="cell-${r}-${c}"><input type="text" class="grammar-input" id="ans-${r}-${c}" autocomplete="off"></div></td>`);
             body.innerHTML += html + `</tr>`;
         });
     }
@@ -241,7 +240,6 @@
     function openVocab(chs) {
         document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
         document.getElementById('vocab-container').classList.add('active');
-        
         vPool = chs.flatMap(c => vocabLibrary[c]).sort(() => Math.random() - 0.5);
         vIdx = 0; vScore = 0; 
         document.getElementById('score-display').innerText = "STREAK: 0";
@@ -290,40 +288,37 @@
         }
     });
 
-   function setTheme(slot) {
-    selectedSlot = slot;
-    const url = localStorage.getItem(`latin-url-${slot}`);
-    const inputField = document.getElementById('bg-url-input');
-
-    if (url && slot !== 'default') {
-        document.body.classList.add('custom-bg');
-        document.body.style.backgroundImage = `url('${url}')`;
-        if (inputField) inputField.value = url; // Show the URL in the box
-    } else {
-        document.body.classList.remove('custom-bg');
-        document.body.style.backgroundImage = 'none';
-        if (inputField) inputField.value = ''; // Clear box for default
-    }
-}
-
-function saveToSlot() {
-    const url = document.getElementById('bg-url-input').value.trim();
-    
-    if (selectedSlot === 'default') {
-        alert("Select Slot 1 or Slot 2 dot first to save!");
-        return;
+    function setTheme(slot) {
+        selectedSlot = slot;
+        const url = localStorage.getItem(`latin-url-${slot}`);
+        const inputField = document.getElementById('bg-url-input');
+        if (url && slot !== 'default') {
+            document.body.classList.add('custom-bg');
+            document.body.style.backgroundImage = `url('${url}')`;
+            if (inputField) inputField.value = url;
+        } else {
+            document.body.classList.remove('custom-bg');
+            document.body.style.backgroundImage = 'none';
+            if (inputField) inputField.value = '';
+        }
     }
 
-    if (url) {
-        localStorage.setItem(`latin-url-${selectedSlot}`, url);
-        // Immediately apply it so the user sees the change
-        document.body.classList.add('custom-bg');
-        document.body.style.backgroundImage = `url('${url}')`;
-        alert(`Saved to ${selectedSlot.toUpperCase()}!`);
-    } else {
-        localStorage.removeItem(`latin-url-${selectedSlot}`);
-        setTheme('default');
-        alert("Slot cleared.");
+    function saveToSlot() {
+        const url = document.getElementById('bg-url-input').value.trim();
+        if (selectedSlot === 'default') {
+            alert("Select Slot 1 or Slot 2 dot first to save!");
+            return;
+        }
+        if (url) {
+            localStorage.setItem(`latin-url-${selectedSlot}`, url);
+            document.body.classList.add('custom-bg');
+            document.body.style.backgroundImage = `url('${url}')`;
+            alert(`Saved to ${selectedSlot.toUpperCase()}!`);
+        } else {
+            localStorage.removeItem(`latin-url-${selectedSlot}`);
+            setTheme('default');
+            alert("Slot cleared.");
+        }
     }
 
     function toggleSection(id) {
@@ -334,12 +329,18 @@ function saveToSlot() {
     }
 
     window.onload = () => {
-        // Check if there's a saved preference or just default to Slot 1
         const lastUsed = localStorage.getItem('latin-url-slot1') ? 'slot1' : 
                          localStorage.getItem('latin-url-slot2') ? 'slot2' : 'default';
-        
         setTheme(lastUsed);
-        goHome();   //makes sure it starts on the home screen
+        goHome();
+
+        const menus = ['vocab-menu', 'grammar-menu', 'extra-menu'];
+        menus.forEach(id => {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(id + '-arrow');
+            if (menu) menu.classList.add('collapsed');
+            if (arrow) arrow.classList.add('collapsed-arrow');
+        });
     };
 </script>
 </body>
