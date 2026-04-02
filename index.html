@@ -112,7 +112,6 @@
 </div>
 
 <script>
-    // ... existing logic ...
 
     window.onload = () => {
         // Apply saved theme on boot
@@ -291,26 +290,40 @@
         }
     });
 
-    function setTheme(slot) {
-        selectedSlot = slot;
-        const url = localStorage.getItem(`latin-url-${slot}`);
-        if(url && slot !== 'default') { 
-            document.body.classList.add('custom-bg'); 
-            document.body.style.backgroundImage = `url('${url}')`; 
-        } else { 
-            document.body.classList.remove('custom-bg'); 
-            document.body.style.backgroundImage = 'none'; 
-        }
+   function setTheme(slot) {
+    selectedSlot = slot;
+    const url = localStorage.getItem(`latin-url-${slot}`);
+    const inputField = document.getElementById('bg-url-input');
+
+    if (url && slot !== 'default') {
+        document.body.classList.add('custom-bg');
+        document.body.style.backgroundImage = `url('${url}')`;
+        if (inputField) inputField.value = url; // Show the URL in the box
+    } else {
+        document.body.classList.remove('custom-bg');
+        document.body.style.backgroundImage = 'none';
+        if (inputField) inputField.value = ''; // Clear box for default
+    }
+}
+
+function saveToSlot() {
+    const url = document.getElementById('bg-url-input').value.trim();
+    
+    if (selectedSlot === 'default') {
+        alert("Select Slot 1 or Slot 2 dot first to save!");
+        return;
     }
 
-    function saveToSlot() {
-        const url = document.getElementById('bg-url-input').value.trim();
-        if (selectedSlot === 'default') { alert("Please select Slot 1 or 2 to save."); return; }
-        if (url) {
-            localStorage.setItem(`latin-url-${selectedSlot}`, url);
-            setTheme(selectedSlot);
-            alert("Background saved!");
-        }
+    if (url) {
+        localStorage.setItem(`latin-url-${selectedSlot}`, url);
+        // Immediately apply it so the user sees the change
+        document.body.classList.add('custom-bg');
+        document.body.style.backgroundImage = `url('${url}')`;
+        alert(`Saved to ${selectedSlot.toUpperCase()}!`);
+    } else {
+        localStorage.removeItem(`latin-url-${selectedSlot}`);
+        setTheme('default');
+        alert("Slot cleared.");
     }
 
     function toggleSection(id) {
@@ -321,10 +334,12 @@
     }
 
     window.onload = () => {
-        // Load default saved background if exists
-        if(localStorage.getItem('latin-url-slot1')) setTheme('slot1');
-        // Close extras by default
-        toggleSection('extra-menu');
+        // Check if there's a saved preference or just default to Slot 1
+        const lastUsed = localStorage.getItem('latin-url-slot1') ? 'slot1' : 
+                         localStorage.getItem('latin-url-slot2') ? 'slot2' : 'default';
+        
+        setTheme(lastUsed);
+        goHome();   //makes sure it starts on the home screen
     };
 </script>
 </body>
