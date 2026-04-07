@@ -3,49 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latin Mastery - Ultimate Edition</title>
+    <title>De Romanis - Ultimate Edition</title>
     <style>
         :root {
             --bg: #0f111a; --side: #161b22; --card: #1c1f26; --text: #d1d5db;
             --accent: #3b82f6; --border: #2d333d; --err: #f87171; --ok: #34d399;
         }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
+        body.custom-bg { background-size: cover; background-position: center; background-attachment: fixed; }
+        body.custom-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 0; }
+
         /* Sidebar */
-        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex-shrink: 0; }
+        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex-shrink: 0; z-index: 10; }
         .sidebar h2 { font-size: 0.8rem; color: #6b7280; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; width: 100%; }
         .nav-btn:hover { background: #2d333d; color: var(--accent); }
 
         /* Main Content */
         .main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; position: relative; overflow-y: auto; }
-        body.custom-bg { background-size: cover; background-position: center; background-attachment: fixed; }
-        body.custom-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 0; }
-
-        .container { background: var(--card); padding: 2rem; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 95%; max-width: 850px; text-align: center; border: 1px solid var(--border); position: relative; z-index: 1; display: none; }
+        .container { background: var(--card); padding: 2.5rem; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 95%; max-width: 850px; text-align: center; border: 1px solid var(--border); position: relative; z-index: 1; display: none; }
         .container.active { display: block; }
 
-        /* Vocab Elements */
-        .latin-word { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
-        input[type="text"] { width: 80%; padding: 12px; font-size: 1.1rem; border: 2px solid var(--border); border-radius: 8px; background: #0f111a; color: #fff; outline: none; text-align: center; }
-        
+        /* Background Slots */
+        .slot-grid { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
+        .slot-btn { padding: 8px 15px; background: #2d333d; border: 1px solid var(--border); color: white; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        .slot-btn.active { border-color: var(--accent); color: var(--accent); }
+
         /* Table Styles */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(0,0,0,0.2); }
-        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; }
         th { background: #111827; color: var(--accent); }
-        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; font-size: 0.95rem; }
+        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; font-size: 1rem; }
         .ans-hint { display: block; font-size: 0.7rem; color: var(--err); margin-top: 2px; font-weight: bold; }
         .correct { border-bottom: 2px solid var(--ok) !important; color: var(--ok); }
         .incorrect { border-bottom: 2px solid var(--err) !important; color: var(--err); }
 
-        .btn-action { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .latin-word { font-size: 2.8rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h1 style="color: var(--accent); font-size: 1.2rem; margin-bottom: 0;">🏛️ De Romanis</h1>
-    <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 20px;">by garzryp</p>
+    <div onclick="goHome()" style="cursor:pointer">
+        <h1 style="color: var(--accent); font-size: 1.2rem; margin-bottom: 0;">🏛️ De Romanis</h1>
+        <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 20px;">by garzryp</p>
+    </div>
     
     <h2>Vocabulary</h2>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
@@ -54,7 +57,7 @@
         <button class="nav-btn" onclick="startVocab([5])">CH 5</button><button class="nav-btn" onclick="startVocab([6])">CH 6</button>
         <button class="nav-btn" onclick="startVocab([7])">CH 7</button><button class="nav-btn" onclick="startVocab([8])">CH 8</button>
     </div>
-    <button class="nav-btn" onclick="startVocab([1,2,3,4])" style="margin-top:5px; color: var(--accent);">CH 1-4</button>
+    <button class="nav-btn" onclick="startVocab([1,2,3,4])" style="color: var(--accent);">CH 1-4</button>
     <button class="nav-btn" onclick="startVocab([5,6,7,8])" style="color: var(--accent);">CH 5-8</button>
     <button class="nav-btn" onclick="startVocab([1,2,3,4,5,6,7,8])" style="font-weight:bold;">ALL VOCAB</button>
 
@@ -69,14 +72,26 @@
     <button class="nav-btn" onclick="loadGrammar('verb-impf')">Imperfect Indicative</button>
     <button class="nav-btn" onclick="loadGrammar('verb-subj')">Imperfect Subjunctive</button>
     <button class="nav-btn" onclick="loadGrammar('perf-sys')">Perfect System</button>
-    <button class="nav-btn" onclick="loadGrammar('irreg')">Sum & Eo (Irregulars)</button>
+    <button class="nav-btn" onclick="loadGrammar('irreg')">Irregulars (Sum/Eo)</button>
 </div>
 
 <div class="main">
     <div id="home-view" class="container active">
-        <h1>Select a chapter or table</h1>
-        <p>Ready to grind?</p>
-        <div style="margin-top:30px;"><input type="text" id="bg-input" placeholder="Paste Background URL..."><button class="btn-action" onclick="saveBg()">Apply Bg</button></div>
+        <h1>Welcome Back</h1>
+        <p>Select a task from the sidebar to begin.</p>
+        
+        <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+            <h3 style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent);">Background Customization</h3>
+            <div class="slot-grid">
+                <button class="slot-btn" id="s-1" onclick="selectSlot(1)">Slot 1</button>
+                <button class="slot-btn" id="s-2" onclick="selectSlot(2)">Slot 2</button>
+                <button class="slot-btn" id="s-3" onclick="selectSlot(3)">Slot 3</button>
+            </div>
+            <input type="text" id="bg-url-input" placeholder="Paste Image URL..." style="width: 80%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid var(--border); background: #0f111a; color: white;">
+            <br>
+            <button class="btn-action" onclick="saveBg()">Save URL</button>
+            <button class="btn-action" onclick="clearBg()" style="background:#b91c1c;">Clear</button>
+        </div>
     </div>
 
     <div id="vocab-view" class="container">
@@ -85,19 +100,18 @@
         <div id="vocab-feedback" style="min-height: 1.5rem; margin-bottom: 1rem; font-weight: bold;"></div>
         <input type="text" id="vocab-input" placeholder="Type meaning..." autocomplete="off">
         <div id="vocab-stats" style="margin-top: 20px; font-size: 0.8rem;">STREAK: 0</div>
-        <button class="btn-action" onclick="goHome()" style="background:#2d333d;">Exit</button>
     </div>
 
     <div id="grammar-view" class="container">
         <h1 id="grammar-title">Table</h1>
         <div style="overflow-x: auto;"><table id="g-table"><thead id="g-head"></thead><tbody id="g-body"></tbody></table></div>
         <button class="btn-action" onclick="checkGrammar()">Check Answers</button>
-        <button class="btn-action" onclick="goHome()" style="background:#2d333d;">Back</button>
     </div>
 </div>
 
 <script>
-const vocabData = {
+// Data includes 1-8 vocab, Nouns, Irregulars, and Pronouns
+const vocabData = { 
     1: [{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}],
     2: [{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}],
     3: [{l:"ā, ab",e:"from, away from, by"},{l:"ascendō",e:"climb"},{l:"audiō",e:"hear, listen to"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"caelum",e:"sky, heaven"},{l:"celeriter",e:"quickly"},{l:"cōnspiciō",e:"catch sight of, notice"},{l:"cum",e:"with, when"},{l:"dē",e:"from, down from, about"},{l:"dēscendō",e:"go down, come down, descend"},{l:"difficilis",e:"difficult"},{l:"diū",e:"for a long time"},{l:"ē, ex",e:"from, out of, out from"},{l:"equus",e:"horse"},{l:"facilis",e:"easy"},{l:"fēlīx",e:"fortunate, happy, lucky"},{l:"in",e:"in, on, onto, into"},{l:"iubeō",e:"order"},{l:"magnus",e:"big, large, great"},{l:"malus",e:"evil, bad"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"ōlim",e:"once, some time ago"},{l:"petō",e:"make for, seek, beg, ask for"},{l:"possum",e:"can, be able"},{l:"pugnō",e:"fight"},{l:"subitō",e:"suddenly"},{l:"tandem",e:"at last, finally"},{l:"terra",e:"ground, land, country, earth"}],
@@ -109,44 +123,35 @@ const vocabData = {
 };
 
 const grammarLibrary = {
-    'noun-decl': {
-        title: "Noun Declension Endings",
-        heads: ["Case", "1st", "2nd (m)", "3rd"],
-        labels: ["Nom s", "Acc s", "Gen s", "Dat s", "Abl s", "Nom p", "Acc p", "Gen p", "Dat p", "Abl p"],
-        keys: [["a","us"," -"],["am","um","em"],["ae","o","is"],["ae","i","i"],["a","o","e"],["ae","i","es"],["as","os","es"],["arum","orum","um"],["is","is","ibus"],["is","is","ibus"]]
-    },
+    'noun-decl': { title: "Noun Endings", heads: ["Case", "1st", "2nd (m)", "3rd"], labels: ["Nom s", "Acc s", "Gen s", "Dat s", "Abl s", "Nom p", "Acc p", "Gen p", "Dat p", "Abl p"], keys: [["a","us"," -"],["am","um","em"],["ae","o","is"],["ae","i","i"],["a","o","e"],["ae","i","es"],["as","os","es"],["arum","orum","um"],["is","is","ibus"],["is","is","ibus"]] },
     'is': { title:"Is, Ea, Id", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["is","ea","id"],["eum","eam","id"],["eius","eius","eius"],["ei","ei","ei"],["eo","ea","eo"],["ei","eae","ea"],["eos","eas","ea"],["eorum","earum","eorum"],["eis","eis","eis"],["eis","eis","eis"]] },
     'hic': { title:"Hic, Haec, Hoc", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["hic","haec","hoc"],["hunc","hanc","hoc"],["huius","huius","huius"],["huic","huic","huic"],["hoc","hac","hoc"],["hi","hae","haec"],["hos","has","haec"],["horum","harum","horum"],["his","his","his"],["his","his","his"]] },
     'qui': { title:"Qui, Quae, Quod", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["qui","quae","quod"],["quem","quam","quod"],["cuius","cuius","cuius"],["cui","cui","cui"],["quo","qua","quo"],["qui","quae","quae"],["quos","quas","quae"],["quorum","quarum","quorum"],["quibus","quibus","quibus"],["quibus","quibus","quibus"]] },
-    'verb-pres': { 
-        title: "Present Indicative Endings", 
-        heads: ["Person", "1st Conj", "2nd Conj", "3rd Conj", "4th Conj"], 
-        labels: ["1s", "2s", "3s", "1p", "2p", "3p"],
-        keys: [["o","o","o","io"], ["as","es","is","is"], ["at","et","it","it"], ["amus","emus","imus","imus"], ["atis","etis","itis","itis"], ["ant","ent","unt","iunt"]] 
-    },
+    'verb-pres': { title: "Present Indicative", heads: ["Person", "1st Conj", "2nd Conj", "3rd Conj", "4th Conj"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["o","o","o","io"], ["as","es","is","is"], ["at","et","it","it"], ["amus","emus","imus","imus"], ["atis","etis","itis","itis"], ["ant","ent","unt","iunt"]] },
     'verb-impf': { title: "Imperfect Indicative", heads: ["Person", "1st", "2nd", "3rd", "4th"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["abam","ebam","ebam","iebam"], ["abas","ebas","ebas","iebas"], ["abat","ebat","ebat","iebat"], ["abamus","ebamus","ebamus","iebamus"], ["abatis","ebatis","ebatis","iebatis"], ["abant","ebant","ebant","iebant"]] },
     'verb-subj': { title: "Imperfect Subjunctive", heads: ["Person", "1st", "2nd", "3rd", "4th"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["arem","erem","erem","irem"], ["ares","eres","eres","ires"], ["aret","eret","eret","iret"], ["aremus","eremus","eremus","iremus"], ["aretis","eretis","eretis","iretis"], ["arent","erent","erent","irent"]] },
     'perf-sys': { title: "Perfect System Active", heads: ["Person", "Perfect", "Pluperfect"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["i", "eram"], ["isti", "eras"], ["it", "erat"], ["imus", "eramus"], ["istis", "eratis"], ["erunt", "erant"]] },
-    'irreg': { title: "Irregulars (Sum & Eo)", heads: ["Person", "Sum (Pres)", "Eo (Pres)"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["sum","eo"],["es","is"],["est","it"],["sumus","imus"],["estis","itis"],["sunt","eunt"]] }
+    'irreg': { title: "Irregulars (Sum/Eo)", heads: ["Person", "Sum (Pres)", "Eo (Pres)"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["sum","eo"],["es","is"],["est","it"],["sumus","imus"],["estis","itis"],["sunt","eunt"]] }
 };
 
-let activePool = [], vIdx = 0, vStreak = 0, curG = '';
+let activePool = [], vIdx = 0, vStreak = 0, curG = '', currentSlot = 1;
 
-function goHome() { 
+function goHome() {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.getElementById('home-view').classList.add('active');
 }
 
+// VOCAB LOGIC
 function startVocab(chs) {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.getElementById('vocab-view').classList.add('active');
-    activePool = chs.flatMap(c => vocabData[c] || []).sort(() => Math.random() - 0.5);
+    activePool = chs.flatMap(c => vocabData[c]).sort(() => Math.random() - 0.5);
     vIdx = 0; vStreak = 0; nextWord();
 }
 
 function nextWord() {
-    if(vIdx >= activePool.length) { document.getElementById('vocab-latin').innerText = "CHAPTER COMPLETE!"; return; }
-    document.getElementById('vocab-progress').innerText = `WORD ${vIdx + 1} OF ${activePool.length}`;
+    if(vIdx >= activePool.length) { document.getElementById('vocab-latin').innerText = "COMPLETE!"; return; }
+    document.getElementById('vocab-progress').innerText = `WORD ${vIdx+1} OF ${activePool.length}`;
     document.getElementById('vocab-latin').innerText = activePool[vIdx].l;
     document.getElementById('vocab-input').value = ""; document.getElementById('vocab-input').focus();
     document.getElementById('vocab-feedback').innerText = "";
@@ -157,9 +162,9 @@ document.getElementById('vocab-input').addEventListener('keypress', e => {
         const val = e.target.value.toLowerCase().trim();
         const answers = activePool[vIdx].e.toLowerCase().split(',').map(s => s.trim());
         if(answers.some(a => val === a || val === a.replace(/\(.*?\)/g, '').trim())) {
-            vStreak++; vIdx++; document.getElementById('vocab-feedback').innerText = "CORRECT";
+            vIdx++; vStreak++; document.getElementById('vocab-feedback').innerText = "CORRECT";
             document.getElementById('vocab-feedback').style.color = "var(--ok)";
-            setTimeout(nextWord, 500);
+            setTimeout(nextWord, 400);
         } else {
             vStreak = 0; document.getElementById('vocab-feedback').innerText = `WRONG: ${activePool[vIdx].e}`;
             document.getElementById('vocab-feedback').style.color = "var(--err)";
@@ -168,18 +173,20 @@ document.getElementById('vocab-input').addEventListener('keypress', e => {
     }
 });
 
+// GRAMMAR LOGIC
 function loadGrammar(id) {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.getElementById('grammar-view').classList.add('active');
     curG = id; const config = grammarLibrary[id];
     document.getElementById('grammar-title').innerText = config.title;
     document.getElementById('g-head').innerHTML = `<tr><th>---</th>${config.heads.slice(1).map(h => `<th>${h}</th>`).join('')}</tr>`;
-    const body = document.getElementById('g-body'); body.innerHTML = '';
+    let bodyHtml = '';
     config.keys.forEach((row, r) => {
-        let html = `<tr><td><b>${config.labels[r]}</b></td>`;
-        row.forEach((val, c) => html += `<td><div id="gc-${r}-${c}"><input type="text" class="grammar-input" id="ga-${r}-${c}" autocomplete="off"></div></td>`);
-        body.innerHTML += html + `</tr>`;
+        bodyHtml += `<tr><td><b>${config.labels[r]}</b></td>`;
+        row.forEach((val, c) => bodyHtml += `<td><div id="gc-${r}-${c}"><input type="text" class="grammar-input" id="ga-${r}-${c}" autocomplete="off"></div></td>`);
+        bodyHtml += `</tr>`;
     });
+    document.getElementById('g-body').innerHTML = bodyHtml;
 }
 
 function checkGrammar() {
@@ -200,9 +207,35 @@ function checkGrammar() {
     });
 }
 
-function saveBg() { const url = document.getElementById('bg-input').value; if(url) { localStorage.setItem('latin-bg', url); applyBg(url); } }
-function applyBg(url) { document.body.classList.add('custom-bg'); document.body.style.backgroundImage = `url('${url}')`; }
-window.onload = () => { if(localStorage.getItem('latin-bg')) applyBg(localStorage.getItem('latin-bg')); };
+// BG SLOT LOGIC
+function selectSlot(num) {
+    currentSlot = num;
+    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`s-${num}`).classList.add('active');
+    const saved = localStorage.getItem(`bg-slot-${num}`);
+    if(saved) applyBg(saved);
+}
+
+function saveBg() {
+    const url = document.getElementById('bg-url-input').value.trim();
+    if(url) {
+        localStorage.setItem(`bg-slot-${currentSlot}`, url);
+        applyBg(url);
+    }
+}
+
+function clearBg() {
+    localStorage.removeItem(`bg-slot-${currentSlot}`);
+    document.body.classList.remove('custom-bg');
+    document.body.style.backgroundImage = '';
+}
+
+function applyBg(url) {
+    document.body.classList.add('custom-bg');
+    document.body.style.backgroundImage = `url('${url}')`;
+}
+
+window.onload = () => selectSlot(1);
 </script>
 </body>
 </html>
