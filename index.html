@@ -3,237 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>De Romanis Unofficial | Latin Mastery</title>
+    <title>Latin Mastery - Ultimate Edition</title>
     <style>
         :root {
-            --bg: #0d1117; --side: #161b22; --card: #1c1f26; --text: #c9d1d9;
-            --accent: #58a6ff; --border: #30363d; --err: #f85149; --ok: #3fb950; --gold: #d29922;
+            --bg: #0f111a; --side: #161b22; --card: #1c1f26; --text: #d1d5db;
+            --accent: #3b82f6; --border: #2d333d; --err: #f87171; --ok: #34d399;
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        body.custom-bg::before { 
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), var(--bg-img);
-            background-size: cover; background-position: center; z-index: -1; 
-        }
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex-shrink: 0; }
+        .sidebar h2 { font-size: 0.8rem; color: #6b7280; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .nav-btn:hover { background: #2d333d; color: var(--accent); }
 
-        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; z-index: 10; flex-shrink: 0; }
-        .sidebar h2 { font-size: 0.8rem; color: #8b949e; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
-        
-        .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; width: 100%; }
-        .nav-btn:hover { background: #21262d; color: var(--accent); }
-        .content { overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease-out; }
-        .content.collapsed { max-height: 0; }
-
+        /* Main Content */
         .main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; position: relative; overflow-y: auto; }
-        .container { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 600px; padding: 40px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: none; text-align: center; }
+        body.custom-bg { background-size: cover; background-position: center; background-attachment: fixed; }
+        body.custom-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 0; }
+
+        .container { background: var(--card); padding: 2rem; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 95%; max-width: 850px; text-align: center; border: 1px solid var(--border); position: relative; z-index: 1; display: none; }
         .container.active { display: block; }
 
-        .vocab-input { width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 8px; border: 2px solid var(--border); background: #0d1117; color: white; outline: none; text-align: center; transition: 0.3s; box-sizing: border-box; }
-        .latin-word { font-size: 3.5rem; font-weight: 700; color: #fff; margin: 20px 0; }
+        /* Vocab Elements */
+        .latin-word { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+        input[type="text"] { width: 80%; padding: 12px; font-size: 1.1rem; border: 2px solid var(--border); border-radius: 8px; background: #0f111a; color: #fff; outline: none; text-align: center; }
         
-        #timer-container { width: 100%; height: 8px; background: #111827; border-radius: 4px; margin-bottom: 20px; overflow: hidden; display: none; }
-        #timer-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
-        
-        .feedback { font-weight: 600; margin: 15px 0; min-height: 1.6rem; font-size: 1.1rem; }
-        .correct { color: var(--ok); }
-        .incorrect { color: var(--err); }
-        .warning { color: var(--gold); }
-        .stats { font-size: 0.8rem; color: #8b949e; text-transform: uppercase; margin: 5px 0; }
-        
-        .action { background: #21262d; color: var(--accent); border: 1px solid var(--border); padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .bg-slot { padding: 8px; margin: 5px; border: 1px solid var(--border); border-radius: 4px; background: #0d1117; cursor: pointer; color: var(--text); }
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: rgba(0,0,0,0.2); }
+        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; font-size: 0.9rem; }
+        th { background: #111827; color: var(--accent); }
+        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; font-size: 0.95rem; }
+        .ans-hint { display: block; font-size: 0.7rem; color: var(--err); margin-top: 2px; font-weight: bold; }
+        .correct { border-bottom: 2px solid var(--ok) !important; color: var(--ok); }
+        .incorrect { border-bottom: 2px solid var(--err) !important; color: var(--err); }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
-        th, td { border: 1px solid var(--border); padding: 10px; text-align: center; }
-        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; }
-        .ans-hint { display: block; font-size: 0.7rem; color: var(--err); margin-top: 3px; font-weight: bold; }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <button onclick="goHome()" style="background:none; border:none; cursor:pointer; text-align:left; padding:0;">
-        <h1 style="font-size: 1.1rem; color: var(--accent); margin-bottom: 0;">🏛️ De Romanis</h1>
-        <p style="font-size: 0.65rem; color: #8b949e; margin: 0 0 10px 5px;">by garzryp</p>
-    </button>
+    <h1 style="color: var(--accent); font-size: 1.2rem; margin-bottom: 0;">🏛️ De Romanis</h1>
+    <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 20px;">by garzryp</p>
     
-    <h2 onclick="toggleSection('vocab-menu')">Vocabulary <span>▼</span></h2>
-    <div id="vocab-menu" class="content">
-        <button class="nav-btn" onclick="openVocab([1,2,3,4,5,6,7,8])">All Chapters</button>
-        <button class="nav-btn" onclick="openVocab([1])">Chapter 1</button>
-        <button class="nav-btn" onclick="openVocab([2])">Chapter 2</button>
-        <button class="nav-btn" onclick="openVocab([3])">Chapter 3</button>
-        <button class="nav-btn" onclick="openVocab([4])">Chapter 4</button>
-        <button class="nav-btn" onclick="openVocab([5])">Chapter 5</button>
-        <button class="nav-btn" onclick="openVocab([6])">Chapter 6</button>
-        <button class="nav-btn" onclick="openVocab([7])">Chapter 7</button>
-        <button class="nav-btn" onclick="openVocab([8])">Chapter 8</button>
+    <h2>Vocabulary</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+        <button class="nav-btn" onclick="startVocab([1])">CH 1</button><button class="nav-btn" onclick="startVocab([2])">CH 2</button>
+        <button class="nav-btn" onclick="startVocab([3])">CH 3</button><button class="nav-btn" onclick="startVocab([4])">CH 4</button>
+        <button class="nav-btn" onclick="startVocab([5])">CH 5</button><button class="nav-btn" onclick="startVocab([6])">CH 6</button>
+        <button class="nav-btn" onclick="startVocab([7])">CH 7</button><button class="nav-btn" onclick="startVocab([8])">CH 8</button>
     </div>
+    <button class="nav-btn" onclick="startVocab([1,2,3,4])" style="margin-top:5px; color: var(--accent);">CH 1-4</button>
+    <button class="nav-btn" onclick="startVocab([5,6,7,8])" style="color: var(--accent);">CH 5-8</button>
+    <button class="nav-btn" onclick="startVocab([1,2,3,4,5,6,7,8])" style="font-weight:bold;">ALL VOCAB</button>
 
-    <h2 onclick="toggleSection('grammar-menu')">Grammar <span>▼</span></h2>
-    <div id="grammar-menu" class="content collapsed">
-        <button class="nav-btn" onclick="loadGrammar('hic')">Hic, Haec, Hoc</button>
-        <button class="nav-btn" onclick="loadGrammar('ille')">Ille, Illa, Illud</button>
-        <button class="nav-btn" onclick="loadGrammar('is')">Is, Ea, Id</button>
-        <button class="nav-btn" onclick="loadGrammar('qui')">Qui, Quae, Quod</button>
-        <button class="nav-btn" onclick="loadGrammar('perf-sys')">Perfect & Pluperfect</button>
-        <button class="nav-btn" onclick="loadGrammar('verb-pres')">Present Indicative</button>
-    </div>
+    <h2>Nouns & Pronouns</h2>
+    <button class="nav-btn" onclick="loadGrammar('noun-decl')">Declension Endings</button>
+    <button class="nav-btn" onclick="loadGrammar('is')">Is, Ea, Id</button>
+    <button class="nav-btn" onclick="loadGrammar('hic')">Hic, Haec, Hoc</button>
+    <button class="nav-btn" onclick="loadGrammar('qui')">Qui, Quae, Quod</button>
 
-    <h2 onclick="toggleSection('table-menu')">Vocab Table <span>▼</span></h2>
-    <div id="table-menu" class="content collapsed">
-        <button class="nav-btn" onclick="showFullTable([1,2,3,4,5,6,7,8])">View All List</button>
-    </div>
+    <h2>Verbs</h2>
+    <button class="nav-btn" onclick="loadGrammar('verb-pres')">Present Indicative</button>
+    <button class="nav-btn" onclick="loadGrammar('verb-impf')">Imperfect Indicative</button>
+    <button class="nav-btn" onclick="loadGrammar('verb-subj')">Imperfect Subjunctive</button>
+    <button class="nav-btn" onclick="loadGrammar('perf-sys')">Perfect System</button>
+    <button class="nav-btn" onclick="loadGrammar('irreg')">Sum & Eo (Irregulars)</button>
 </div>
 
 <div class="main">
-    <div id="home-container" class="container active">
-        <h1>Welcome</h1>
-        <p>Master Latin vocabulary and grammar.</p>
-        
-        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px;">
-            <h3>🖌️ Background Slots</h3>
-            <input type="text" id="bg-url-input" class="vocab-input" placeholder="Paste image URL..." style="margin-bottom:10px;">
-            <div id="bg-slots">
-                <button class="bg-slot" onclick="saveBg(1)">Slot 1</button>
-                <button class="bg-slot" onclick="saveBg(2)">Slot 2</button>
-                <button class="bg-slot" onclick="saveBg(3)">Slot 3</button>
-            </div>
-            <button class="action" onclick="clearBg()" style="font-size:0.7rem; padding:5px 10px;">Clear Background</button>
-        </div>
-        
-        <label><input type="checkbox" id="timer-toggle"> Sudden Death Timer</label>
+    <div id="home-view" class="container active">
+        <h1>Select a chapter or table</h1>
+        <p>Ready to grind?</p>
+        <div style="margin-top:30px;"><input type="text" id="bg-input" placeholder="Paste Background URL..."><button class="btn-action" onclick="saveBg()">Apply Bg</button></div>
     </div>
 
-    <div id="vocab-container" class="container">
-        <div id="timer-container"><div id="timer-bar"></div></div>
-        <div class="stats" id="progress">WORD 1 OF X</div>
-        <div class="latin-word" id="display-latin">---</div>
-        <div class="feedback" id="feedback"></div>
-        <input type="text" id="answer-input" class="vocab-input" placeholder="Type meaning..." autocomplete="off">
-        <div class="stats" id="score-display">STREAK: 0</div>
-        <div class="stats" id="best-display">BEST STREAK: 0</div>
-        <button class="action" onclick="goHome()">Exit</button>
+    <div id="vocab-view" class="container">
+        <div id="vocab-progress" style="font-size: 0.8rem; color: #6b7280; margin-bottom: 10px;">WORD 1 OF X</div>
+        <div class="latin-word" id="vocab-latin">---</div>
+        <div id="vocab-feedback" style="min-height: 1.5rem; margin-bottom: 1rem; font-weight: bold;"></div>
+        <input type="text" id="vocab-input" placeholder="Type meaning..." autocomplete="off">
+        <div id="vocab-stats" style="margin-top: 20px; font-size: 0.8rem;">STREAK: 0</div>
+        <button class="btn-action" onclick="goHome()" style="background:#2d333d;">Exit</button>
     </div>
 
-    <div id="grammar-container" class="container" style="max-width: 850px;">
-        <h1 id="view-title">Grammar</h1>
-        <table><thead id="table-head"></thead><tbody id="table-body"></tbody></table>
-        <div style="margin-top:20px;">
-            <button class="action" onclick="checkGrammar()" style="background:var(--accent); color:white;">Check</button>
-            <button class="action" onclick="goHome()">Back</button>
-        </div>
-    </div>
-
-    <div id="table-view-container" class="container" style="max-width: 800px;">
-        <h1 id="table-view-title">Vocabulary List</h1>
-        <div style="max-height: 500px; overflow-y: auto;">
-            <table><thead><tr><th>Latin</th><th>English</th><th>CH</th></tr></thead><tbody id="vocab-list-body"></tbody></table>
-        </div>
-        <button class="action" onclick="goHome()">Back</button>
+    <div id="grammar-view" class="container">
+        <h1 id="grammar-title">Table</h1>
+        <div style="overflow-x: auto;"><table id="g-table"><thead id="g-head"></thead><tbody id="g-body"></tbody></table></div>
+        <button class="btn-action" onclick="checkGrammar()">Check Answers</button>
+        <button class="btn-action" onclick="goHome()" style="background:#2d333d;">Back</button>
     </div>
 </div>
 
 <script>
-// --- VOCAB DATA ---
-const vocabLibrary = { 1:[{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}], 2:[{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}], 3:[{l:"ā, ab",e:"from, away from, by"},{l:"ascendō",e:"climb"},{l:"audiō",e:"hear, listen to"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"caelum",e:"sky, heaven"},{l:"celeriter",e:"quickly"},{l:"cōnspiciō",e:"catch sight of, notice"},{l:"cum",e:"with, when"},{l:"dē",e:"from, down from, about"},{l:"dēscendō",e:"go down, come down, descend"},{l:"difficilis",e:"difficult"},{l:"diū",e:"for a long time"},{l:"ē, ex",e:"from, out of, out from"},{l:"equus",e:"horse"},{l:"facilis",e:"easy"},{l:"fēlīx",e:"fortunate, happy, lucky"},{l:"in",e:"in, on, onto, into"},{l:"iubeō",e:"order"},{l:"magnus",e:"big, large, great"},{l:"malus",e:"evil, bad"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"ōlim",e:"once, some time ago"},{l:"petō",e:"make for, seek, beg, ask for"},{l:"possum",e:"can, be able"},{l:"pugnō",e:"fight"},{l:"subitō",e:"suddenly"},{l:"tandem",e:"at last, finally"},{l:"terra",e:"ground, land, country, earth"}], 4:[{l:"aedificō",e:"build"},{l:"ager",e:"field"},{l:"aurum",e:"gold"},{l:"crēdō",e:"believe, trust"},{l:"crūdēlis",e:"cruel"},{l:"cūr?",e:"why?"},{l:"dō",e:"give"},{l:"dōnum",e:"gift, present"},{l:"faciō",e:"make, do"},{l:"ferō",e:"bring, carry, bear"},{l:"habeō",e:"have, hold"},{l:"īra",e:"anger"},{l:"miser",e:"miserable, wretched, sad"},{l:"nōlō",e:"not want, refuse"},{l:"nōmen",e:"name"},{l:"nōnne?",e:"surely?, surely, surely..., surely...?"},{l:"num?",e:"surely not?, surely not, surely...not?, surely...not"},{l:"pecūnia",e:"money"},{l:"persuādeō",e:"persuade"},{l:"perterritus",e:"terrified"},{l:"pōnō",e:"put, place, set up"},{l:"quandō?",e:"when?, when"},{l:"quod",e:"because"},{l:"semper",e:"always"},{l:"tamen",e:"however"},{l:"templum",e:"temple"},{l:"trīstis",e:"sad"},{l:"ubi?",e:"where?, where, when?, when"},{l:"volō",e:"want, wish, be willing"}], 5:[{l:"absum",e:"be absent, be away, be distant from"},{l:"adsum",e:"be here, be present"},{l:"agricola",e:"farmer"},{l:"ancilla",e:"female slave, slave girl, slave, slave woman"},{l:"aqua",e:"water"},{l:"bibō",e:"drink"},{l:"cēna",e:"dinner, meal"},{l:"cēterī",e:"the rest, the others, rest, others"},{l:"cibus",e:"food"},{l:"clāmō",e:"shout"},{l:"cōnsūmō",e:"eat, consume"},{l:"fessus",e:"tired"},{l:"festīnō",e:"hurry"},{l:"iterum",e:"again"},{l:"lūdus",e:"school, game, public games, festival"},{l:"magnopere",e:"greatly, very much"},{l:"mortuus",e:"dead"},{l:"mox",e:"soon"},{l:"nunc",e:"now"},{l:"parō",e:"prepare, provide"},{l:"rīdeō",e:"laugh, smile, laugh at"},{l:"sacer",e:"sacred"},{l:"servus",e:"slave, male slave, slave boy"},{l:"spectō",e:"look at, watch"},{l:"taberna",e:"shop, inn"},{l:"urbs",e:"city"},{l:"veniō",e:"come"},{l:"vīlla",e:"house, country villa, villa"},{l:"vīnum",e:"wine"}], 6:[{l:"altus",e:"high, deep"},{l:"amīcus",e:"friend, male friend"},{l:"annus",e:"year"},{l:"dormiō",e:"sleep"},{l:"emō",e:"buy"},{l:"hīc",e:"here"},{l:"hōra",e:"hour"},{l:"iam",e:"now, already"},{l:"ibi",e:"there"},{l:"itaque",e:"and so, therefore"},{l:"iuvenis",e:"young man"},{l:"locus",e:"place"},{l:"meus",e:"my"},{l:"moneō",e:"warn, advise"},{l:"nōlī / nōlīte",e:"don't, do not"},{l:"noster",e:"our"},{l:"novus",e:"new"},{l:"numquam",e:"never"},{l:"ostendō",e:"show"},{l:"parvus",e:"small"},{l:"puella",e:"girl"},{l:"puer",e:"boy"},{l:"respondeō",e:"reply"},{l:"rogō",e:"ask, ask for"},{l:"sīc",e:"thus, in this way"},{l:"suus",e:"his, her, its, their"},{l:"tuus",e:"your, yours"},{l:"verbum",e:"word"},{l:"vester",e:"your, yours"},{l:"videō",e:"see"}], 7:[{l:"ambulō",e:"walk"},{l:"antequam",e:"before"},{l:"cīvis",e:"citizen"},{l:"clārus",e:"famous, clear"},{l:"dīcō",e:"say, speak, tell"},{l:"domina",e:"mistress"},{l:"dominus",e:"master"},{l:"et ... et",e:"both ... and, both and, both...and"},{l:"forum",e:"forum, market place"},{l:"habitō",e:"live"},{l:"hic",e:"this, these"},{l:"hortus",e:"garden"},{l:"ille",e:"that, those, he, she, it"},{l:"is",e:"he, she, it, that, those"},{l:"līberō",e:"set free"},{l:"lībertus",e:"freedman, x-slave"},{l:"mūrus",e:"wall"},{l:"nūntius",e:"messenger"},{l:"omnis",e:"all, every"},{l:"paucī",e:"few, a few"},{l:"postquam",e:"after, when"},{l:"quamquam",e:"although"},{l:"quī",e:"who, which"},{l:"quis?",e:"who? what? which?"},{l:"quoque",e:"also, too"},{l:"salūtō",e:"greet"},{l:"senātor",e:"senator"},{l:"ubi",e:"when, where"},{l:"via",e:"street, road, way"}], 8:[{l:"abeō",e:"go away"},{l:"adeō",e:"go to, approach"},{l:"appropinquō",e:"approach, come near to"},{l:"clāmor",e:"shout, shouting, noise"},{l:"conveniō",e:"come together, gather, meet"},{l:"cupiō",e:"want, desire"},{l:"ego",e:"I, me"},{l:"enim",e:"for"},{l:"epistula",e:"letter"},{l:"exeō",e:"go out from, go away, go out, exit, leave"},{l:"ferox",e:"fierce, ferocious"},{l:"frūstrā",e:"in vain"},{l:"ineō",e:"go into, enter"},{l:"labōrō",e:"work, toil, labor, labour"},{l:"legō",e:"read, choose"},{l:"liber",e:"book"},{l:"longus",e:"long"},{l:"magis",e:"more"},{l:"magister",e:"teacher"},{l:"maior",e:"bigger, larger, greater"},{l:"maximē",e:"very greatly"},{l:"maximus",e:"greatest, largest, biggest"},{l:"medius",e:"middle"},{l:"melior",e:"better"},{l:"minimus",e:"smallest, least"},{l:"minor",e:"smaller, less"},{l:"nōbilis",e:"of noble birth, renowned"},{l:"nōs",e:"we, us"},{l:"nōtus",e:"famous, well-known"},{l:"optimus",e:"best"},{l:"peior",e:"worse"},{l:"pereō",e:"die, perish"},{l:"pessimus",e:"worst"},{l:"plūrēs",e:"more"},{l:"plūrimus",e:"most, very many"},{l:"plūs",e:"more"},{l:"quam",e:"than, how, as possible"},{l:"redeō",e:"go back, come back, return"},{l:"scrībō",e:"write"},{l:"sē",e:"himself, herself, itself, themselves"},{l:"senex",e:"old man"},{l:"stultus",e:"stupid, foolish"},{l:"trānseō",e:"go over, cross"},{l:"tū",e:"you"},{l:"vir",e:"man, husband"},{l:"vōs",e:"you, you (plural)"}] };
-
-const grammarLibrary = {
-    'hic': { title:"Hic, Haec, Hoc", heads:["Case","Masc","Fem","Neut"], keys:[["hic","haec","hoc"],["hunc","hanc","hoc"],["huius","huius","huius"],["huic","huic","huic"],["hoc","hac","hoc"],["hi","hae","haec"],["hos","has","haec"],["horum","harum","horum"],["his","his","his"],["his","his","his"]], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"] },
-    'ille': { title:"Ille, Illa, Illud", heads:["Case","Masc","Fem","Neut"], keys:[["ille","illa","illud"],["illum","illam","illud"],["illius","illius","illius"],["illi","illi","illi"],["illo","illa","illo"],["illi","illae","illa"],["illos","illas","illa"],["illorum","illarum","illorum"],["illis","illis","illis"],["illis","illis","illis"]], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"] },
-    'is': { title:"Is, Ea, Id", heads:["Case","Masc","Fem","Neut"], keys:[["is","ea","id"],["eum","eam","id"],["eius","eius","eius"],["ei","ei","ei"],["eo","ea","eo"],["ei","eae","ea"],["eos","eas","ea"],["eorum","earum","eorum"],["eis","eis","eis"],["eis","eis","eis"]], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"] },
-    'qui': { title:"Qui, Quae, Quod", heads:["Case","Masc","Fem","Neut"], keys:[["qui","quae","quod"],["quem","quam","quod"],["cuius","cuius","cuius"],["cui","cui","cui"],["quo","qua","quo"],["qui","quae","quae"],["quos","quas","quae"],["quorum","quarum","quorum"],["quibus","quibus","quibus"],["quibus","quibus","quibus"]], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"] },
-    'perf-sys': { title: "Perfect & Pluperfect", heads: ["Person", "Perfect", "Pluperfect"], keys: [["i","eram"],["isti","eras"],["it","erat"],["imus","eramus"],["istis","eratis"],["erunt","erant"]], labels:["1s","2s","3s","1p","2p","3p"] },
-    'verb-pres': { title: "Present Indicative", heads: ["Person", "1st", "2nd", "3rd", "4th"], keys: [["o","eo","o","io"],["as","es","is","is"],["at","et","it","it"],["amus","emus","imus","imus"],["atis","etis","itis","itis"],["ant","ent","unt","iunt"]], labels:["1s","2s","3s","1p","2p","3p"] }
+const vocabData = {
+    1: [{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}],
+    2: [{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}],
+    3: [{l:"ā, ab",e:"from, away from, by"},{l:"ascendō",e:"climb"},{l:"audiō",e:"hear, listen to"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"caelum",e:"sky, heaven"},{l:"celeriter",e:"quickly"},{l:"cōnspiciō",e:"catch sight of, notice"},{l:"cum",e:"with, when"},{l:"dē",e:"from, down from, about"},{l:"dēscendō",e:"go down, come down, descend"},{l:"difficilis",e:"difficult"},{l:"diū",e:"for a long time"},{l:"ē, ex",e:"from, out of, out from"},{l:"equus",e:"horse"},{l:"facilis",e:"easy"},{l:"fēlīx",e:"fortunate, happy, lucky"},{l:"in",e:"in, on, onto, into"},{l:"iubeō",e:"order"},{l:"magnus",e:"big, large, great"},{l:"malus",e:"evil, bad"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"ōlim",e:"once, some time ago"},{l:"petō",e:"make for, seek, beg, ask for"},{l:"possum",e:"can, be able"},{l:"pugnō",e:"fight"},{l:"subitō",e:"suddenly"},{l:"tandem",e:"at last, finally"},{l:"terra",e:"ground, land, country, earth"}],
+    4: [{l:"aedificō",e:"build"},{l:"ager",e:"field"},{l:"aurum",e:"gold"},{l:"crēdō",e:"believe, trust"},{l:"crūdēlis",e:"cruel"},{l:"cūr?",e:"why?"},{l:"dō",e:"give"},{l:"dōnum",e:"gift, present"},{l:"faciō",e:"make, do"},{l:"ferō",e:"bring, carry, bear"},{l:"habeō",e:"have, hold"},{l:"īra",e:"anger"},{l:"miser",e:"miserable, wretched, sad"},{l:"nōlō",e:"not want, refuse"},{l:"nōmen",e:"name"},{l:"nōnne?",e:"surely?, surely, surely..., surely...?"},{l:"num?",e:"surely not?, surely not, surely...not?, surely...not"},{l:"pecūnia",e:"money"},{l:"persuādeō",e:"persuade"},{l:"perterritus",e:"terrified"},{l:"pōnō",e:"put, place, set up"},{l:"quandō?",e:"when?, when"},{l:"quod",e:"because"},{l:"semper",e:"always"},{l:"tamen",e:"however"},{l:"templum",e:"temple"},{l:"trīstis",e:"sad"},{l:"ubi?",e:"where?, where, when?, when"},{l:"volō",e:"want, wish, be willing"}],
+    5: [{l:"absum",e:"be absent, be away, be distant from"},{l:"adsum",e:"be here, be present"},{l:"agricola",e:"farmer"},{l:"ancilla",e:"female slave, slave girl, slave, slave woman"},{l:"aqua",e:"water"},{l:"bibō",e:"drink"},{l:"cēna",e:"dinner, meal"},{l:"cēterī",e:"the rest, the others, rest, others"},{l:"cibus",e:"food"},{l:"clāmō",e:"shout"},{l:"cōnsūmō",e:"eat, consume"},{l:"fessus",e:"tired"},{l:"festīnō",e:"hurry"},{l:"iterum",e:"again"},{l:"lūdus",e:"school, game, public games, festival"},{l:"magnopere",e:"greatly, very much"},{l:"mortuus",e:"dead"},{l:"mox",e:"soon"},{l:"nunc",e:"now"},{l:"parō",e:"prepare, provide"},{l:"rīdeō",e:"laugh, smile, laugh at"},{l:"sacer",e:"sacred"},{l:"servus",e:"slave, male slave, slave boy"},{l:"spectō",e:"look at, watch"},{l:"taberna",e:"shop, inn"},{l:"urbs",e:"city"},{l:"veniō",e:"come"},{l:"vīlla",e:"house, country villa, villa"},{l:"vīnum",e:"wine"}],
+    6: [{l:"altus",e:"high, deep"},{l:"amīcus",e:"friend, male friend"},{l:"annus",e:"year"},{l:"dormiō",e:"sleep"},{l:"emō",e:"buy"},{l:"hīc",e:"here"},{l:"hōra",e:"hour"},{l:"iam",e:"now, already"},{l:"ibi",e:"there"},{l:"itaque",e:"and so, therefore"},{l:"iuvenis",e:"young man"},{l:"locus",e:"place"},{l:"meus",e:"my"},{l:"moneō",e:"warn, advise"},{l:"nōlī / nōlīte",e:"don't, do not"},{l:"noster",e:"our"},{l:"novus",e:"new"},{l:"numquam",e:"never"},{l:"ostendō",e:"show"},{l:"parvus",e:"small"},{l:"puella",e:"girl"},{l:"puer",e:"boy"},{l:"respondeō",e:"reply"},{l:"rogō",e:"ask, ask for"},{l:"sīc",e:"thus, in this way"},{l:"suus",e:"his, her, its, their"},{l:"tuus",e:"your, yours"},{l:"verbum",e:"word"},{l:"vester",e:"your, yours"},{l:"videō",e:"see"}],
+    7: [{l:"ambulō",e:"walk"},{l:"antequam",e:"before"},{l:"cīvis",e:"citizen"},{l:"clārus",e:"famous, clear"},{l:"dīcō",e:"say, speak, tell"},{l:"domina",e:"mistress"},{l:"dominus",e:"master"},{l:"et ... et",e:"both ... and, both and, both...and"},{l:"forum",e:"forum, market place"},{l:"habitō",e:"live"},{l:"hic",e:"this, these"},{l:"hortus",e:"garden"},{l:"ille",e:"that, those, he, she, it"},{l:"is",e:"he, she, it, that, those"},{l:"līberō",e:"set free"},{l:"lībertus",e:"freedman, ex-slave"},{l:"mūrus",e:"wall"},{l:"nūntius",e:"messenger"},{l:"omnis",e:"all, every"},{l:"paucī",e:"few, a few"},{l:"postquam",e:"after, when"},{l:"quamquam",e:"although"},{l:"quī",e:"who, which"},{l:"quis?",e:"who? what? which?"},{l:"quoque",e:"also, too"},{l:"salūtō",e:"greet"},{l:"senātor",e:"senator"},{l:"ubi",e:"when, where"},{l:"via",e:"street, road, way"}],
+    8: [{l:"abeō",e:"go away"},{l:"adeō",e:"go to, approach"},{l:"appropinquō",e:"approach, come near to"},{l:"clāmor",e:"shout, shouting, noise"},{l:"conveniō",e:"come together, gather, meet"},{l:"cupiō",e:"want, desire"},{l:"ego",e:"I, me"},{l:"enim",e:"for"},{l:"epistula",e:"letter"},{l:"exeō",e:"go out from, go away, go out, exit, leave"},{l:"ferox",e:"fierce, ferocious"},{l:"frūstrā",e:"in vain"},{l:"ineō",e:"go into, enter"},{l:"labōrō",e:"work, toil, labor, labour"},{l:"legō",e:"read, choose"},{l:"liber",e:"book"},{l:"longus",e:"long"},{l:"magis",e:"more"},{l:"magister",e:"teacher"},{l:"maior",e:"bigger, larger, greater"},{l:"maximē",e:"very greatly"},{l:"maximus",e:"greatest, largest, biggest"},{l:"medius",e:"middle"},{l:"melior",e:"better"},{l:"minimus",e:"smallest, least"},{l:"minor",e:"smaller, less"},{l:"nōbilis",e:"of noble birth, renowned"},{l:"nōs",e:"we, us"},{l:"nōtus",e:"famous, well-known"},{l:"optimus",e:"best"},{l:"peior",e:"worse"},{l:"pereō",e:"die, perish"},{l:"pessimus",e:"worst"},{l:"plūrēs",e:"more"},{l:"plūrimus",e:"most, very many"},{l:"plūs",e:"more"},{l:"quam",e:"than, how, as possible"},{l:"redeō",e:"go back, come back, return"},{l:"scrībō",e:"write"},{l:"sē",e:"himself, herself, itself, themselves"},{l:"senex",e:"old man"},{l:"stultus",e:"stupid, foolish"},{l:"trānseō",e:"go over, cross"},{l:"tū",e:"you"},{l:"vir",e:"man, husband"},{l:"vōs",e:"you, you (plural)"}]
 };
 
-// --- LOGIC ---
-let vPool=[], vIdx=0, vScore=0, vBest=localStorage.getItem('latin-best-streak')||0, wrongPile=[], timerInterval, curG=null;
+const grammarLibrary = {
+    'noun-decl': {
+        title: "Noun Declension Endings",
+        heads: ["Case", "1st", "2nd (m)", "3rd"],
+        labels: ["Nom s", "Acc s", "Gen s", "Dat s", "Abl s", "Nom p", "Acc p", "Gen p", "Dat p", "Abl p"],
+        keys: [["a","us"," -"],["am","um","em"],["ae","o","is"],["ae","i","i"],["a","o","e"],["ae","i","es"],["as","os","es"],["arum","orum","um"],["is","is","ibus"],["is","is","ibus"]]
+    },
+    'is': { title:"Is, Ea, Id", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["is","ea","id"],["eum","eam","id"],["eius","eius","eius"],["ei","ei","ei"],["eo","ea","eo"],["ei","eae","ea"],["eos","eas","ea"],["eorum","earum","eorum"],["eis","eis","eis"],["eis","eis","eis"]] },
+    'hic': { title:"Hic, Haec, Hoc", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["hic","haec","hoc"],["hunc","hanc","hoc"],["huius","huius","huius"],["huic","huic","huic"],["hoc","hac","hoc"],["hi","hae","haec"],["hos","has","haec"],["horum","harum","horum"],["his","his","his"],["his","his","his"]] },
+    'qui': { title:"Qui, Quae, Quod", heads:["Case","Masc","Fem","Neut"], labels:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], keys:[["qui","quae","quod"],["quem","quam","quod"],["cuius","cuius","cuius"],["cui","cui","cui"],["quo","qua","quo"],["qui","quae","quae"],["quos","quas","quae"],["quorum","quarum","quorum"],["quibus","quibus","quibus"],["quibus","quibus","quibus"]] },
+    'verb-pres': { 
+        title: "Present Indicative Endings", 
+        heads: ["Person", "1st Conj", "2nd Conj", "3rd Conj", "4th Conj"], 
+        labels: ["1s", "2s", "3s", "1p", "2p", "3p"],
+        keys: [["o","o","o","io"], ["as","es","is","is"], ["at","et","it","it"], ["amus","emus","imus","imus"], ["atis","etis","itis","itis"], ["ant","ent","unt","iunt"]] 
+    },
+    'verb-impf': { title: "Imperfect Indicative", heads: ["Person", "1st", "2nd", "3rd", "4th"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["abam","ebam","ebam","iebam"], ["abas","ebas","ebas","iebas"], ["abat","ebat","ebat","iebat"], ["abamus","ebamus","ebamus","iebamus"], ["abatis","ebatis","ebatis","iebatis"], ["abant","ebant","ebant","iebant"]] },
+    'verb-subj': { title: "Imperfect Subjunctive", heads: ["Person", "1st", "2nd", "3rd", "4th"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["arem","erem","erem","irem"], ["ares","eres","eres","ires"], ["aret","eret","eret","iret"], ["aremus","eremus","eremus","iremus"], ["aretis","eretis","eretis","iretis"], ["arent","erent","erent","irent"]] },
+    'perf-sys': { title: "Perfect System Active", heads: ["Person", "Perfect", "Pluperfect"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["i", "eram"], ["isti", "eras"], ["it", "erat"], ["imus", "eramus"], ["istis", "eratis"], ["erunt", "erant"]] },
+    'irreg': { title: "Irregulars (Sum & Eo)", heads: ["Person", "Sum (Pres)", "Eo (Pres)"], labels: ["1s", "2s", "3s", "1p", "2p", "3p"], keys: [["sum","eo"],["es","is"],["est","it"],["sumus","imus"],["estis","itis"],["sunt","eunt"]] }
+};
 
-function clean(s) { return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); }
-function isNear(s1,s2){ s1=clean(s1); s2=clean(s2); if(Math.abs(s1.length-s2.length)>1) return false; let e=0,i=0,j=0; while(i<s1.length&&j<s2.length){ if(s1[i]!==s2[j]){ e++; if(s1.length>s2.length)i++; else if(s2.length>s1.length)j++; else {i++;j++;} } else {i++;j++;} } return (e+(s1.length-i)+(s2.length-j))<=1; }
+let activePool = [], vIdx = 0, vStreak = 0, curG = '';
 
-function toggleSection(id) { document.querySelectorAll('.content').forEach(c=>{ if(c.id!==id)c.classList.add('collapsed'); }); document.getElementById(id).classList.toggle('collapsed'); }
-function goHome() { document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.getElementById('home-container').classList.add('active'); clearInterval(timerInterval); }
+function goHome() { 
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.getElementById('home-view').classList.add('active');
+}
 
-function openVocab(chs) { document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.getElementById('vocab-container').classList.add('active'); vPool=chs.flatMap(c=>vocabLibrary[c]).sort(()=>Math.random()-0.5); vIdx=0; vScore=0; wrongPile=[]; document.getElementById('best-display').innerText=`BEST STREAK: ${vBest}`; showVWord(); }
-function showVWord() { const input=document.getElementById('answer-input'); if(vIdx>=vPool.length){ if(wrongPile.length>0){ vPool=[...wrongPile]; wrongPile=[]; vIdx=0; document.getElementById('feedback').innerHTML=`<span style="color:var(--gold)">Retrying missed words...</span>`; setTimeout(showVWord,1500); return; } document.getElementById('display-latin').innerText="Victory! 🏛️"; input.style.display='none'; return; } document.getElementById('progress').innerText=`WORD ${vIdx+1} OF ${vPool.length} ${wrongPile.length>0?'(+'+wrongPile.length+' missed)':''}`; document.getElementById('display-latin').innerText=vPool[vIdx].l; input.value=""; input.disabled=false; input.style.borderColor="var(--border)"; input.focus(); document.getElementById('feedback').innerText=""; if(document.getElementById('timer-toggle').checked) startTimer(); }
+function startVocab(chs) {
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.getElementById('vocab-view').classList.add('active');
+    activePool = chs.flatMap(c => vocabData[c] || []).sort(() => Math.random() - 0.5);
+    vIdx = 0; vStreak = 0; nextWord();
+}
 
-document.getElementById('answer-input').addEventListener('keydown', (e) => {
+function nextWord() {
+    if(vIdx >= activePool.length) { document.getElementById('vocab-latin').innerText = "CHAPTER COMPLETE!"; return; }
+    document.getElementById('vocab-progress').innerText = `WORD ${vIdx + 1} OF ${activePool.length}`;
+    document.getElementById('vocab-latin').innerText = activePool[vIdx].l;
+    document.getElementById('vocab-input').value = ""; document.getElementById('vocab-input').focus();
+    document.getElementById('vocab-feedback').innerText = "";
+}
+
+document.getElementById('vocab-input').addEventListener('keypress', e => {
     if(e.key === 'Enter') {
-        const input = e.target;
-        if(input.disabled) return;
-        
-        const user = input.value.trim();
-        
-        // CHECK FOR EMPTY FIRST
-        if (user === "") {
-            input.style.borderColor = "var(--gold)";
-            document.getElementById('feedback').innerHTML = `<span class="warning">Write something!</span>`;
-            return; // Exit early so it doesn't count as a fail
-        }
-
-        const correctList = vPool[vIdx].e.split(',').map(s => s.trim());
-        const isCorrect = correctList.some(ans => clean(user) === clean(ans));
-        const isAlmost = !isCorrect && correctList.some(ans => isNear(user, ans));
-
-        clearInterval(timerInterval);
-        input.disabled = true;
-
-        if(isCorrect) {
-            input.style.borderColor = "var(--ok)";
-            document.getElementById('feedback').innerHTML = `<span class="correct">Optime! (Correct)</span>`;
-            vScore++; vIdx++;
-            if(vScore > vBest) { vBest = vScore; localStorage.setItem('latin-best-streak', vBest); }
-            setTimeout(showVWord, 800);
-        } else if(isAlmost) {
-            input.style.borderColor = "var(--gold)";
-            document.getElementById('feedback').innerHTML = `<span class="warning">Close! Try again.</span>`;
-            input.disabled = false; 
-            input.focus();
+        const val = e.target.value.toLowerCase().trim();
+        const answers = activePool[vIdx].e.toLowerCase().split(',').map(s => s.trim());
+        if(answers.some(a => val === a || val === a.replace(/\(.*?\)/g, '').trim())) {
+            vStreak++; vIdx++; document.getElementById('vocab-feedback').innerText = "CORRECT";
+            document.getElementById('vocab-feedback').style.color = "var(--ok)";
+            setTimeout(nextWord, 500);
         } else {
-            input.style.borderColor = "var(--err)";
-            document.getElementById('feedback').innerHTML = `<span class="incorrect">Incorrect. It means: ${vPool[vIdx].e}</span>`;
-            wrongPile.push(vPool[vIdx]); 
-            vScore = 0; 
-            vIdx++;
-            setTimeout(showVWord, 2500);
+            vStreak = 0; document.getElementById('vocab-feedback').innerText = `WRONG: ${activePool[vIdx].e}`;
+            document.getElementById('vocab-feedback').style.color = "var(--err)";
         }
-        document.getElementById('score-display').innerText = `STREAK: ${vScore}`;
-        document.getElementById('best-display').innerText = `BEST STREAK: ${vBest}`;
+        document.getElementById('vocab-stats').innerText = `STREAK: ${vStreak}`;
     }
 });
 
-function startTimer(){ const bar=document.getElementById('timer-bar'); document.getElementById('timer-container').style.display='block'; let w=100; clearInterval(timerInterval); timerInterval=setInterval(()=>{ w-=1.5; bar.style.width=w+"%"; if(w<=0){clearInterval(timerInterval); document.getElementById('answer-input').dispatchEvent(new KeyboardEvent('keydown',{'key':'Enter'}));} },100); }
-
-function loadGrammar(id){ document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.getElementById('grammar-container').classList.add('active'); curG=id; const config=grammarLibrary[id]; document.getElementById('view-title').innerText=config.title; document.getElementById('table-head').innerHTML=`<tr><th>Case/Pers</th>${config.heads.slice(1).map(h => `<th>${h}</th>`).join('')}</tr>`; const body=document.getElementById('table-body'); body.innerHTML=''; config.keys.forEach((row,r)=>{ let html=`<tr><td><b>${config.labels[r]}</b></td>`; row.forEach((val,c)=>{html+=`<td><div id="gcell-${r}-${c}"><input type="text" class="grammar-input" id="gans-${r}-${c}" autocomplete="off"></div></td>`;}); body.innerHTML+=html+`</tr>`; }); }
-function checkGrammar(){ const config=grammarLibrary[curG]; config.keys.forEach((row,r)=>{ row.forEach((val,c)=>{ const input=document.getElementById(`gans-${r}-${c}`); const cell=document.getElementById(`gcell-${r}-${c}`); const user=clean(input.value); const corr=clean(val); cell.querySelectorAll('.ans-hint').forEach(h=>h.remove()); if(user===corr){input.style.color="var(--ok)";} else{input.style.color="var(--err)"; const hint=document.createElement('span'); hint.className='ans-hint'; hint.innerText=val; cell.appendChild(hint);} }); }); }
-
-function showFullTable(chs){ document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.getElementById('table-view-container').classList.add('active'); const body=document.getElementById('vocab-list-body'); body.innerHTML=''; chs.forEach(ch=>{ vocabLibrary[ch].forEach(w=>{ const r=document.createElement('tr'); r.innerHTML=`<td style="color:var(--accent); font-weight:bold; text-align:left;">${w.l}</td><td style="text-align:left;">${w.e}</td><td>${ch}</td>`; body.appendChild(r); }); }); }
-
-function saveBg(slot) {
-    const url = document.getElementById('bg-url-input').value;
-    if(url) {
-        localStorage.setItem('latin-bg-'+slot, url);
-        localStorage.setItem('active-bg-slot', slot);
-        applyBg(url);
-    } else {
-        const saved = localStorage.getItem('latin-bg-'+slot);
-        if(saved) { localStorage.setItem('active-bg-slot', slot); applyBg(saved); }
-    }
+function loadGrammar(id) {
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.getElementById('grammar-view').classList.add('active');
+    curG = id; const config = grammarLibrary[id];
+    document.getElementById('grammar-title').innerText = config.title;
+    document.getElementById('g-head').innerHTML = `<tr><th>---</th>${config.heads.slice(1).map(h => `<th>${h}</th>`).join('')}</tr>`;
+    const body = document.getElementById('g-body'); body.innerHTML = '';
+    config.keys.forEach((row, r) => {
+        let html = `<tr><td><b>${config.labels[r]}</b></td>`;
+        row.forEach((val, c) => html += `<td><div id="gc-${r}-${c}"><input type="text" class="grammar-input" id="ga-${r}-${c}" autocomplete="off"></div></td>`);
+        body.innerHTML += html + `</tr>`;
+    });
 }
-function applyBg(url) { document.body.classList.add('custom-bg'); document.body.style.setProperty('--bg-img', `url('${url}')`); }
-function clearBg() { localStorage.removeItem('active-bg-slot'); document.body.classList.remove('custom-bg'); document.body.style.removeProperty('--bg-img'); }
 
-window.onload = () => {
-    const activeSlot = localStorage.getItem('active-bg-slot');
-    if(activeSlot) {
-        const url = localStorage.getItem('latin-bg-'+activeSlot);
-        if(url) applyBg(url);
-    }
-    goHome();
-};
+function checkGrammar() {
+    const config = grammarLibrary[curG];
+    config.keys.forEach((row, r) => {
+        row.forEach((val, c) => {
+            const input = document.getElementById(`ga-${r}-${c}`);
+            const cell = document.getElementById(`gc-${r}-${c}`);
+            cell.querySelectorAll('.ans-hint').forEach(h => h.remove());
+            if(input.value.trim().toLowerCase() === val.trim().toLowerCase()) {
+                input.className = "grammar-input correct";
+            } else {
+                input.className = "grammar-input incorrect";
+                const hint = document.createElement('span'); hint.className = 'ans-hint'; hint.innerText = val;
+                cell.appendChild(hint);
+            }
+        });
+    });
+}
+
+function saveBg() { const url = document.getElementById('bg-input').value; if(url) { localStorage.setItem('latin-bg', url); applyBg(url); } }
+function applyBg(url) { document.body.classList.add('custom-bg'); document.body.style.backgroundImage = `url('${url}')`; }
+window.onload = () => { if(localStorage.getItem('latin-bg')) applyBg(localStorage.getItem('latin-bg')); };
 </script>
 </body>
 </html>
