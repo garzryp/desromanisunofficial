@@ -4,104 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>De Romanis Unofficial | Latin Mastery</title>
-    <style>    /*style block*/
+    <style>
         :root {
             --bg: #0d1117; --side: #161b22; --card: #1c1f26; --text: #c9d1d9;
             --accent: #58a6ff; --border: #30363d; --err: #f85149; --ok: #3fb950; --gold: #d29922;
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; transition: background 0.4s ease; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-    body.custom-bg { 
-        background-color: #000; 
-    }
-    
-    /* This creates the actual background layer */
-    body.custom-bg::before { 
-        content: ""; 
-        position: fixed; 
-        top: 0; left: 0; 
-        width: 100%; height: 100%; 
-        /* This uses the variable set by JavaScript */
-        background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), var(--bg-img);
-        background-size: cover; 
-        background-position: center; 
-        z-index: -1; 
-    }
+        body.custom-bg::before { 
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), var(--bg-img);
+            background-size: cover; background-position: center; z-index: -1; 
+        }
 
-        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; z-index: 10; }
-        .sidebar h2 { font-size: 0.8rem; color: #8b949e; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .sidebar h2:hover { color: var(--accent); }
-        .sidebar h2 span { font-size: 0.6rem; transition: transform 0.3s; }
-        
-        .logo-btn { background: none; border: none; padding: 0; cursor: pointer; text-align: left; width: 100%; }
-        .title-link { text-decoration: none; color: var(--accent); transition: 0.2s; display: block; }
+        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; z-index: 10; flex-shrink: 0; }
+        .sidebar h2 { font-size: 0.8rem; color: #8b949e; margin: 15px 0 5px 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
         
         .nav-btn { background: transparent; border: none; color: var(--text); text-align: left; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; width: 100%; }
         .nav-btn:hover { background: #21262d; color: var(--accent); }
-        .nav-btn.active { background: #1f6feb; color: white; font-weight: bold; }
+        .content { overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease-out; }
+        .content.collapsed { max-height: 0; }
 
-        .content { display: flex; flex-direction: column; gap: 5px; overflow: hidden; max-height: 1000px; transition: max-height 0.3s ease-out, opacity 0.3s; }
-        .content.collapsed {
-            max-height: 0 !important;
-            opacity: 0 !important;
-            pointer-events: none; 
-            margin: 0;
-            padding: 0;
-        }
-        .collapsed-arrow { transform: rotate(-90deg); }
-
-        .main { flex: 1; overflow-y: auto; padding: 40px; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .container { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 900px; padding: 32px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: none; }
+        .main { flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: center; padding: 20px; position: relative; }
+        .container { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 600px; padding: 40px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); display: none; text-align: center; }
         .container.active { display: block; }
 
-        h1 { margin-top: 0; color: white; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .instruction-box { background: rgba(210, 153, 34, 0.1); border: 1px solid var(--gold); color: var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.95rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid var(--border); padding: 12px; text-align: center; }
-        th { background: #21262d; color: var(--accent); }
-        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; font-size: 1.1rem; outline: none; }
-        
-        .vocab-ui { 
-            text-align: center; 
-            max-width: 500px; 
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-        }
-        .latin-word { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 20px 0; }
-        .vocab-input { width: 100%; padding: 12px; font-size: 1.1rem; border-radius: 8px; border: 2px solid var(--border); background: #0d1117; color: white; outline: none; text-align: center; margin-bottom: 10px; }
+        .vocab-input { width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 8px; border: 2px solid var(--border); background: #0d1117; color: white; outline: none; text-align: center; transition: 0.3s; box-sizing: border-box; }
+        .latin-word { font-size: 3rem; font-weight: 700; color: #fff; margin: 20px 0; }
         
         #timer-container { width: 100%; height: 8px; background: #111827; border-radius: 4px; margin-bottom: 20px; overflow: hidden; display: none; }
         #timer-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
-        .feedback { font-weight: 600; margin: 10px 0; min-height: 1.5rem; }
+        
+        .feedback { font-weight: 600; margin: 15px 0; min-height: 1.5rem; font-size: 1.1rem; }
         .correct { color: var(--ok); }
         .incorrect { color: var(--err); }
-        .stats { font-size: 0.8rem; color: #8b949e; text-transform: uppercase; margin-top: 10px; }
-
-        .btn-box { display: flex; gap: 15px; margin-top: 30px; justify-content: center; }
-        button.action { background: #21262d; color: var(--accent); border: 1px solid var(--border); padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button.action:hover { background: #30363d; }
+        .stats { font-size: 0.8rem; color: #8b949e; text-transform: uppercase; margin: 5px 0; }
         
-        .theme-picker { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
-        .theme-dot { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.2s; }
+        .action { background: #21262d; color: var(--accent); border: 1px solid var(--border); padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: center; }
+        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; font-size: 1rem; }
         .ans-hint { display: block; font-size: 0.75rem; color: var(--err); margin-top: 4px; font-weight: bold; }
-        
-        .credit { font-size: 0.8rem; color: #8b949e; margin-top: 20px; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <!--sidebar-->
 <div class="sidebar">
-    <button onclick="goHome()" class="logo-btn">
-        <h1 style="font-size: 1.1rem; margin-bottom: 5px; color: var(--accent);">🏛️ De Romanis Unofficial</h1>
+    <button onclick="goHome()" style="background:none; border:none; cursor:pointer; text-align:left; padding:0;">
+        <h1 style="font-size: 1.1rem; color: var(--accent);">🏛️ De Romanis Unofficial</h1>
     </button>
-    <p style="font-size: 0.7rem; color: #8b949e; margin-bottom: 20px; margin-top: 0;">By garzryp</p>
     
-    <h2 onclick="toggleSection('vocab-menu')">Vocabulary <span id="vocab-menu-arrow" class="collapsed-arrow">▼</span></h2>
-    <div id="vocab-menu" class="content collapsed">
+    <h2 onclick="toggleSection('vocab-menu')">Vocabulary <span>▼</span></h2>
+    <div id="vocab-menu" class="content">
         <button class="nav-btn" onclick="openVocab([1])">Chapter 1</button>
         <button class="nav-btn" onclick="openVocab([2])">Chapter 2</button>
         <button class="nav-btn" onclick="openVocab([3])">Chapter 3</button>
@@ -110,126 +64,75 @@
         <button class="nav-btn" onclick="openVocab([6])">Chapter 6</button>
         <button class="nav-btn" onclick="openVocab([7])">Chapter 7</button>
         <button class="nav-btn" onclick="openVocab([8])">Chapter 8</button>
-        <button class="nav-btn" onclick="openVocab([1,2,3,4])">CH 1-4</button>
-        <button class="nav-btn" onclick="openVocab([5,6,7,8])">CH 5-8</button>
         <button class="nav-btn" onclick="openVocab([1,2,3,4,5,6,7,8])">All Chapters</button>
     </div>
 
-    <h2 onclick="toggleSection('grammar-menu')">Grammar <span id="grammar-menu-arrow" class="collapsed-arrow">▼</span></h2>
+    <h2 onclick="toggleSection('grammar-menu')">Grammar <span>▼</span></h2>
     <div id="grammar-menu" class="content collapsed">
         <button class="nav-btn" onclick="loadGrammar('perf-sys')">Perfect & Pluperfect</button>
         <button class="nav-btn" onclick="loadGrammar('verb-pres')">Present Indicative</button>
         <button class="nav-btn" onclick="loadGrammar('verb-impf')">Imperfect Indicative</button>
         <button class="nav-btn" onclick="loadGrammar('verb-subj')">Imperfect Subjunctive</button>
-    </div>
-    
-    <h2 onclick="toggleSection('table-menu')">Vocab Table <span id="table-menu-arrow" class="collapsed-arrow">▼</span></h2>
-    <div id="table-menu" class="content collapsed">
-        <button class="nav-btn" onclick="showFullTable([1,2,3,4])">Chapters 1-4</button>
-        <button class="nav-btn" onclick="showFullTable([5,6,7,8])">Chapters 5-8</button>
-        <button class="nav-btn" onclick="showFullTable([1,2,3,4,5,6,7,8])">All Chapters</button>
-    </div>
-    
-    <h2 onclick="toggleSection('extra-menu')">Extras <span id="extra-menu-arrow" class="collapsed-arrow">▼</span></h2>
-    <div id="extra-menu" class="content collapsed">
         <button class="nav-btn" onclick="loadGrammar('irr-eo')">Eo, Ire</button>
         <button class="nav-btn" onclick="loadGrammar('irr-volo')">Volo & Nolo</button>
-        <button class="nav-btn" onclick="loadGrammar('pro-pers')">Personal (Ego/Tu)</button>
-        <button class="nav-btn" onclick="loadGrammar('pro-demo')">Is, Ea, Id</button>
-        <button class="nav-btn" onclick="loadGrammar('pro-hic')">Hic & Ille</button>
+    </div>
+
+    <h2 onclick="toggleSection('table-menu')">Vocab Table <span>▼</span></h2>
+    <div id="table-menu" class="content collapsed">
+        <button class="nav-btn" onclick="showFullTable([1,2,3,4,5,6,7,8])">View All List</button>
     </div>
 </div>
 
-<script>
-
-    window.onload = () => {
-        // Apply saved theme on boot
-        if(localStorage.getItem('latin-url-slot1')) setTheme('slot1');
-        
-        // Ensure we start on the home screen
-        goHome();
-        // Closes the menus
-        const menus = ['vocab-menu', 'grammar-menu', 'extra-menu'];
-        menus.forEach(id => {
-            const menu = document.getElementById(id);
-            const arrow = document.getElementById(id + '-arrow');
-            if (menu) menu.classList.add('collapsed');
-            if (arrow) arrow.classList.add('collapsed-arrow');
-        });
-    };
-</script>
-
 <div class="main">
-    <div id="home-container" class="container active" style="text-align: center;">
+    <div id="home-container" class="container active">
         <h1>Welcome</h1>
-        <p>Master Latin vocabulary and grammar from the De Romanis course.</p>
-        
-        <div style="margin: 40px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px;">
+        <p>Master Latin vocabulary and grammar.</p>
+        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px;">
             <h3>🖌️ Custom Background</h3>
-            <input type="text" id="bg-url-input" class="vocab-input" placeholder="Paste image URL here..." style="max-width: 400px;">
-            <div class="theme-picker">
-                <div class="theme-dot" onclick="setTheme('default')" style="background: #0d1117;"></div>
-                <div class="theme-dot" onclick="setTheme('slot1')" style="background: #374151;"></div>
-                <div class="theme-dot" onclick="setTheme('slot2')" style="background: #374151;"></div>
-            </div>
-            <button class="action" onclick="saveToSlot()">Save Background to Slot</button>
+            <input type="text" id="bg-url-input" class="vocab-input" placeholder="Paste image URL...">
+            <button class="action" onclick="saveBg()">Save Background</button>
         </div>
-
-        <div style="margin-top:20px; font-size:0.9rem;">
-            <label><input type="checkbox" id="timer-toggle"> Enable Sudden Death Timer</label>
-        </div>
-        
-        <p class="credit">Version 2.1 • Created by garzryp</p>
-    </div>
-
-    <div id="grammar-container" class="container">
-        <h1 id="view-title">Grammar</h1>
-        <div id="instruction-container"></div>
-        <table id="master-table">
-            <thead id="table-head"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
-        <div class="btn-box">
-            <button class="action" style="background: var(--accent); color: white; border: none;" onclick="checkGrammar()">Check Answers</button>
-            <button class="action" onclick="resetGrammar()">Reset</button>
-        </div>
+        <label><input type="checkbox" id="timer-toggle"> Sudden Death Timer</label>
     </div>
 
     <div id="vocab-container" class="container">
-        <div class="vocab-ui">
-            <h1 id="vocab-title">Vocabulary Quiz</h1>
-            <div id="vocab-quiz-screen">
-                <div id="timer-container"><div id="timer-bar"></div></div>
-                <div class="stats" id="progress">WORD 1 OF X</div>
-                <div class="latin-word" id="display-latin">---</div>
-                <div class="feedback" id="feedback"></div>
-                <input type="text" id="answer-input" class="vocab-input" placeholder="Type meaning..." autocomplete="off">
-                <div class="stats" id="score-display">STREAK: 0</div>
-                <button class="action" onclick="goHome()" style="margin-top: 20px;">Exit to Home</button>
-            </div>
+        <div id="timer-container"><div id="timer-bar"></div></div>
+        <div class="stats" id="progress">WORD 1 OF X</div>
+        <div class="latin-word" id="display-latin">---</div>
+        <div class="feedback" id="feedback"></div>
+        <input type="text" id="answer-input" class="vocab-input" placeholder="Type meaning..." autocomplete="off">
+        <div class="stats" id="score-display">STREAK: 0</div>
+        <div class="stats" id="best-display">BEST STREAK: 0</div>
+        <button class="action" onclick="goHome()">Exit</button>
+    </div>
+
+    <div id="table-view-container" class="container" style="max-width: 800px;">
+        <h1 id="table-view-title">Vocabulary List</h1>
+        <div style="max-height: 500px; overflow-y: auto;">
+            <table>
+                <thead><tr><th>Latin</th><th>English</th><th>CH</th></tr></thead>
+                <tbody id="vocab-list-body"></tbody>
+            </table>
         </div>
+        <button class="action" onclick="goHome()">Back</button>
     </div>
-    <div id="table-view-container" class="container">
-    <h1 id="table-view-title">Vocabulary List</h1>
-    <div style="max-height: 600px; overflow-y: auto;">
-        <table id="vocab-list-table">
-            <thead>
-                <tr>
-                    <th>Latin</th>
-                    <th>English</th>
-                    <th>Chapter</th>
-                </tr>
-            </thead>
-            <tbody id="vocab-list-body">
-                </tbody>
+
+    <div id="grammar-container" class="container" style="max-width: 850px;">
+        <h1 id="view-title">Grammar</h1>
+        <div id="instruction-container"></div>
+        <table>
+            <thead id="table-head"></thead>
+            <tbody id="table-body"></tbody>
         </table>
-    </div>
-    <div class="btn-box">
-        <button class="action" onclick="goHome()">Back to Home</button>
+        <div style="margin-top:20px;">
+            <button class="action" onclick="checkGrammar()" style="background:var(--accent); color:white;">Check Answers</button>
+            <button class="action" onclick="goHome()">Back</button>
+        </div>
     </div>
 </div>
 
 <script>
+// --- DATA LIBRARIES ---
 const vocabLibrary = {
     1: [{l:"amō",e:"love, like"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"et",e:"and, even"},{l:"etiam",e:"also, even"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man, human being, human"},{l:"īrātus",e:"angry"},{l:"lacrimō",e:"weep, cry"},{l:"laetus",e:"happy"},{l:"laudō",e:"praise"},{l:"līberī",e:"children"},{l:"māter",e:"mother"},{l:"multus",e:"much, many"},{l:"pater",e:"father"},{l:"pulcher",e:"beautiful, handsome"},{l:"pūniō",e:"punish"},{l:"rēgīna",e:"queen"},{l:"regō",e:"rule"},{l:"rēx",e:"king"},{l:"saepe",e:"often"},{l:"saevus",e:"savage, cruel"},{l:"sed",e:"but"},{l:"sum",e:"be, i am, am"},{l:"terreō",e:"frighten, terrify"},{l:"tum",e:"then"},{l:"uxor",e:"wife"}],
     2: [{l:"ad",e:"to, towards, at"},{l:"arma",e:"arms, weapons"},{l:"audāx",e:"bold, daring"},{l:"bellum",e:"war"},{l:"capiō",e:"take, catch, capture, make (a plan)"},{l:"contrā",e:"against"},{l:"corpus",e:"body"},{l:"currō",e:"run"},{l:"eō",e:"go"},{l:"flūmen",e:"river"},{l:"fortis",e:"brave, strong"},{l:"fortiter",e:"bravely, strongly"},{l:"gladius",e:"sword"},{l:"Graecus",e:"Greek"},{l:"hasta",e:"spear"},{l:"iaciō",e:"throw"},{l:"in",e:"into, onto, in, on"},{l:"ingēns",e:"huge"},{l:"inquit",e:"say, says"},{l:"interficiō",e:"kill"},{l:"maneō",e:"remain, stay"},{l:"nōn",e:"not"},{l:"per",e:"through, along"},{l:"perīculum",e:"danger"},{l:"prope",e:"near"},{l:"sagitta",e:"arrow"},{l:"silva",e:"wood"},{l:"timeō",e:"fear, be afraid"},{l:"trāns",e:"across"}],
@@ -242,164 +145,198 @@ const vocabLibrary = {
 };
 
 const grammarLibrary = {
-    'perf-sys': { title: "Perfect & Pluperfect", info: "For integration see the 3rd principal part and replace the 'i' with the endings.", heads: ["Person", "Perfect", "Pluperfect"], keys: [["i", "eram"], ["isti", "eras"], ["it", "erat"], ["imus", "eramus"], ["istis", "eratis"], ["erunt", "erant"]] },
+    'perf-sys': { title: "Perfect & Pluperfect", info: "Integration: Look at the 3rd principal part and replace the 'i' with these endings.", heads: ["Person", "Perfect", "Pluperfect"], keys: [["i", "eram"], ["isti", "eras"], ["it", "erat"], ["imus", "eramus"], ["istis", "eratis"], ["erunt", "erant"]] },
     'verb-pres': { title: "Present Indicative", heads: ["Person", "1st", "2nd", "3rd", "4th"], keys: [["o","eo","o","io"], ["as","es","is","is"], ["at","et","it","it"], ["amus","emus","imus","imus"], ["atis","etis","itis","itis"], ["ant","ent","unt","iunt"]] },
     'verb-impf': { title: "Imperfect Indicative", heads: ["Person", "1st", "2nd", "3rd", "4th"], keys: [["abam","ebam","ebam","iebam"], ["abas","ebas","ebas","iebas"], ["abat","ebat","ebat","iebat"], ["abamus","ebamus","ebamus","iebamus"], ["abatis","ebatis","ebatis","iebatis"], ["abant","ebant","ebant","iebant"]] },
     'verb-subj': { title: "Imperfect Subjunctive", heads: ["Person", "1st", "2nd", "3rd", "4th"], keys: [["arem","erem","erem","irem"], ["ares","eres","eres","ires"], ["aret","eret","eret","iret"], ["aremus","eremus","eremus","iremus"], ["aretis","eretis","eretis","iretis"], ["arent","erent","erent","irent"]] },
     'irr-eo': { title: "Eo, Ire (To Go)", heads: ["Person", "Pres", "Impf", "Perf", "Plup"], keys: [["eo","ibam","ii","ieram"], ["is","ibas","isti","ieras"], ["it","ibat","iit","ierat"], ["imus","ibamus","iimus","ieramus"], ["itis","ibatis","istis","ieratis"], ["eunt","ibant","ierunt","ierant"]] },
-    'irr-volo': { title: "Volo & Nolo", heads: ["Person", "Volo", "Nolo"], keys: [["volo","nolo"], ["vis","non vis"], ["vult","non vult"], ["volumus","nolumus"], ["vultis","non vultis"], ["volunt","nolunt"]] },
-    'pro-pers': { title: "Personal Pronouns", heads: ["Case", "1s", "2s", "1p", "2p"], labels: ["Nom","Acc","Dat","Gen"], keys: [["ego","tu","nos","vos"], ["me","te","nos","vos"], ["mihi","tibi","nobis","vobis"], ["mei","tui","nostrum","vostrum"]] },
-    'pro-demo': { title: "Is, Ea, Id", heads: ["Case", "Masc", "Fem", "Neut"], labels: ["Acc S","Gen S","Dat S","Acc P","Gen P","Dat P"], keys: [["eum","eam","id"], ["eius","eius","eius"], ["ei","ei","ei"], ["eos","eas","ea"], ["eorum","earum","eorum"], ["eis","eis","eis"]] },
-    'pro-hic': { title: "Hic & Ille (Nom/Acc)", heads: ["Case", "Hic (M)", "Hic (F)", "Ille (M)", "Ille (F)"], labels: ["Nom S","Acc S","Nom P","Acc P"], keys: [["hic","haec","ille","illa"], ["hunc","hanc","illum","illam"], ["hi","hae","illi","illae"], ["hos","has","illos","illas"]] }
+    'irr-volo': { title: "Volo & Nolo", heads: ["Person", "Volo", "Nolo"], keys: [["volo","nolo"], ["vis","non vis"], ["vult","non vult"], ["volumus","nolumus"], ["vultis","non vultis"], ["volunt","nolunt"]] }
 };
 
-let curG = 'perf-sys', vPool = [], vIdx = 0, vScore = 0;
-let selectedSlot = 'slot1';
-let timerInterval;
+// --- APP STATE ---
+let vPool = [], vIdx = 0, vScore = 0, vBest = localStorage.getItem('latin-best-streak') || 0;
+let wrongPile = [], timerInterval, curG = null;
 
-// --- NAVIGATION & UI ---
+// --- UTILS ---
+function clean(s) { 
+    return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); 
+}
+
+function isNear(s1, s2) {
+    s1 = clean(s1); s2 = clean(s2);
+    if (Math.abs(s1.length - s2.length) > 1) return false;
+    let err = 0, i = 0, j = 0;
+    while(i<s1.length && j<s2.length) {
+        if(s1[i]!==s2[j]) { err++; if(s1.length>s2.length) i++; else if(s2.length>s1.length) j++; else {i++;j++;} }
+        else {i++;j++;}
+    }
+    return (err + (s1.length-i) + (s2.length-j)) <= 1;
+}
+
+// --- NAVIGATION ---
+function toggleSection(id) {
+    document.querySelectorAll('.content').forEach(c => {
+        if(c.id !== id) c.classList.add('collapsed');
+    });
+    document.getElementById(id).classList.toggle('collapsed');
+}
+
 function goHome() {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.getElementById('home-container').classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     clearInterval(timerInterval);
 }
 
-function toggleSection(id) {
-    const menu = document.getElementById(id);
-    const arrow = document.getElementById(id + '-arrow');
-    if (menu) menu.classList.toggle('collapsed');
-    if (arrow) arrow.classList.toggle('collapsed-arrow');
-}
-
-// --- BACKGROUND LOGIC ---
-function setTheme(slot) {
-    selectedSlot = slot;
-    const url = localStorage.getItem(`latin-url-${slot}`);
-    const inputField = document.getElementById('bg-url-input');
-
-    if (url && slot !== 'default') {
-        document.body.classList.add('custom-bg');
-        document.body.style.setProperty('--bg-img', `url('${url}')`);
-        if (inputField) inputField.value = url;
-    } else {
-        document.body.classList.remove('custom-bg');
-        document.body.style.setProperty('--bg-img', 'none');
-        if (inputField) inputField.value = '';
-    }
-}
-
-function saveToSlot() {
-    const urlInput = document.getElementById('bg-url-input').value.trim();
-    if (selectedSlot === 'default') return alert("Select Slot 1 or Slot 2 dot first!");
-    
-    if (urlInput) {
-        localStorage.setItem(`latin-url-${selectedSlot}`, urlInput);
-        setTheme(selectedSlot);
-        alert(`Saved to ${selectedSlot.toUpperCase()}!`);
-    } else {
-        localStorage.removeItem(`latin-url-${selectedSlot}`);
-        setTheme('default');
-        alert("Slot cleared.");
-    }
-}
-
-// --- VOCABULARY LOGIC ---
+// --- VOCABULARY QUIZ ---
 function openVocab(chs) {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.getElementById('vocab-container').classList.add('active');
     vPool = chs.flatMap(c => vocabLibrary[c]).sort(() => Math.random() - 0.5);
-    vIdx = 0; vScore = 0;
-    document.getElementById('score-display').innerText = "STREAK: 0";
-    document.getElementById('answer-input').style.display = 'block';
+    vIdx = 0; vScore = 0; wrongPile = [];
+    document.getElementById('best-display').innerText = `BEST STREAK: ${vBest}`;
     showVWord();
 }
 
 function showVWord() {
-    if (vIdx >= vPool.length) {
-        clearInterval(timerInterval);
+    const input = document.getElementById('answer-input');
+    if(vIdx >= vPool.length) {
+        if(wrongPile.length > 0) {
+            vPool = [...wrongPile]; wrongPile = []; vIdx = 0;
+            document.getElementById('feedback').innerHTML = `<span style="color:var(--gold)">Retrying missed words...</span>`;
+            setTimeout(showVWord, 1500); return;
+        }
         document.getElementById('display-latin').innerText = "Victory! 🏛️";
-        document.getElementById('answer-input').style.display = 'none';
-        document.getElementById('timer-container').style.display = 'none';
-        return;
+        input.style.display = 'none'; return;
     }
-    
-    document.getElementById('progress').innerText = `WORD ${vIdx + 1} OF ${vPool.length}`;
+    document.getElementById('progress').innerText = `WORD ${vIdx+1} OF ${vPool.length} ${wrongPile.length > 0 ? '(+'+wrongPile.length+' missed)' : ''}`;
     document.getElementById('display-latin').innerText = vPool[vIdx].l;
-    document.getElementById('answer-input').value = "";
-    document.getElementById('answer-input').focus();
-    document.getElementById('feedback').innerText = "";
-    
-    if (document.getElementById('timer-toggle').checked) startTimer();
+    input.value = ""; input.disabled = false; input.style.borderColor = "var(--border)";
+    input.focus(); document.getElementById('feedback').innerText = "";
+    if(document.getElementById('timer-toggle').checked) startTimer();
 }
 
-function startTimer() {
-    const bar = document.getElementById('timer-bar');
-    const container = document.getElementById('timer-container');
-    container.style.display = 'block';
-    
-    let width = 100;
-    clearInterval(timerInterval);
-    
-    timerInterval = setInterval(() => {
-        width -= 1.2; // Speed of the bar
-        bar.style.width = width + "%";
-        
-        if (width <= 0) {
-            clearInterval(timerInterval);
-            handleIncorrect();
-        }
-    }, 100);
-}
+document.getElementById('answer-input').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') {
+        const input = e.target; if(input.disabled) return;
+        const user = input.value.trim();
+        const correctList = vPool[vIdx].e.split(',').map(s => s.trim());
+        const isCorrect = correctList.some(ans => clean(user) === clean(ans));
+        const isAlmost = !isCorrect && user !== "" && correctList.some(ans => isNear(user, ans));
 
-function handleIncorrect() {
-    vScore = 0;
-    document.getElementById('feedback').innerHTML = `<span class="incorrect">Heu! It means: ${vPool[vIdx].e}</span>`;
-    document.getElementById('score-display').innerText = `STREAK: 0`;
-    // Briefly show the answer before moving on if they ran out of time
-    vIdx++;
-    setTimeout(showVWord, 2000);
-}
+        clearInterval(timerInterval);
+        input.disabled = true;
 
-// Consistently clean strings (strip macrons and extra spaces)
-function cleanStr(str) {
-    return str.toLowerCase()
-        .replace(/[ā]/g, 'a').replace(/[ē]/g, 'e')
-        .replace(/[ī]/g, 'i').replace(/[ō]/g, 'o')
-        .replace(/[ū]/g, 'u').trim();
-}
-
-document.getElementById('answer-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const user = cleanStr(e.target.value);
-        const correctAnswers = vPool[vIdx].e.split(',').map(s => cleanStr(s));
-        
-        if (correctAnswers.some(ans => user === ans) && user !== "") {
-            clearInterval(timerInterval);
-            vScore++;
-            vIdx++;
-            document.getElementById('feedback').innerHTML = `<span class="correct">Optime!</span>`;
-            document.getElementById('score-display').innerText = `STREAK: ${vScore}`;
-            setTimeout(showVWord, 600);
+        if(isCorrect) {
+            input.style.borderColor = "var(--ok)";
+            document.getElementById('feedback').innerHTML = `<span class="correct">Correct</span>`;
+            vScore++; vIdx++;
+            if(vScore > vBest) { vBest = vScore; localStorage.setItem('latin-best-streak', vBest); }
+            setTimeout(showVWord, 800);
+        } else if(isAlmost) {
+            input.style.borderColor = "var(--gold)";
+            document.getElementById('feedback').innerHTML = `<span style="color:var(--gold)">Close! Try again.</span>`;
+            input.disabled = false; input.focus();
         } else {
-            clearInterval(timerInterval);
-            handleIncorrect();
+            input.style.borderColor = "var(--err)";
+            document.getElementById('feedback').innerHTML = `<span class="incorrect">Incorrect: ${vPool[vIdx].e}</span>`;
+            wrongPile.push(vPool[vIdx]); vScore = 0; vIdx++;
+            setTimeout(showVWord, 2500);
         }
+        document.getElementById('score-display').innerText = `STREAK: ${vScore}`;
+        document.getElementById('best-display').innerText = `BEST STREAK: ${vBest}`;
     }
 });
 
-// --- INITIALIZATION ---
-window.onload = () => {
-    const lastUsed = localStorage.getItem('latin-url-slot1') ? 'slot1' : 
-                     localStorage.getItem('latin-url-slot2') ? 'slot2' : 'default';
-    setTheme(lastUsed);
+function startTimer() {
+    const bar = document.getElementById('timer-bar');
+    document.getElementById('timer-container').style.display = 'block';
+    let w = 100; clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        w -= 1.5; bar.style.width = w + "%";
+        if(w <= 0) { clearInterval(timerInterval); document.getElementById('answer-input').dispatchEvent(new KeyboardEvent('keydown', {'key':'Enter'})); }
+    }, 100);
+}
 
-    ['vocab-menu', 'grammar-menu', 'extra-menu', 'table-menu'].forEach(id => {
-        const menu = document.getElementById(id);
-        const arrow = document.getElementById(id + '-arrow');
-        if (menu) menu.classList.add('collapsed');
-        if (arrow) arrow.classList.add('collapsed-arrow');
+// --- GRAMMAR LOGIC ---
+function loadGrammar(id) {
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.getElementById('grammar-container').classList.add('active');
+    curG = id; 
+    const config = grammarLibrary[id];
+    
+    document.getElementById('view-title').innerText = config.title;
+    document.getElementById('instruction-container').innerHTML = config.info ? `<div style="background: rgba(210, 153, 34, 0.1); border: 1px solid var(--gold); color: var(--gold); padding: 15px; border-radius: 8px; margin-bottom: 20px;">💡 ${config.info}</div>` : '';
+    document.getElementById('table-head').innerHTML = `<tr>${config.heads.map(h => `<th>${h}</th>`).join('')}</tr>`;
+    
+    const body = document.getElementById('table-body'); 
+    body.innerHTML = '';
+    const rows = ["1s", "2s", "3s", "1p", "2p", "3p"];
+    
+    config.keys.forEach((row, r) => {
+        let html = `<tr><td><b>${rows[r]}</b></td>`;
+        row.forEach((val, c) => {
+            html += `<td><div id="gcell-${r}-${c}"><input type="text" class="grammar-input" id="gans-${r}-${c}" autocomplete="off"></div></td>`;
+        });
+        body.innerHTML += html + `</tr>`;
     });
+}
+
+function checkGrammar() {
+    const config = grammarLibrary[curG];
+    config.keys.forEach((row, r) => {
+        row.forEach((correctVal, c) => {
+            const input = document.getElementById(`gans-${r}-${c}`);
+            const cell = document.getElementById(`gcell-${r}-${c}`);
+            const userVal = clean(input.value);
+            const cleanCorrect = clean(correctVal);
+            
+            const oldHint = cell.querySelector('.ans-hint');
+            if (oldHint) oldHint.remove();
+
+            if (userVal === cleanCorrect) {
+                input.style.color = "var(--ok)";
+            } else {
+                input.style.color = "var(--err)";
+                const hint = document.createElement('span');
+                hint.className = 'ans-hint';
+                hint.innerText = correctVal;
+                cell.appendChild(hint);
+            }
+        });
+    });
+}
+
+// --- TABLE VIEW ---
+function showFullTable(chs) {
+    document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+    document.getElementById('table-view-container').classList.add('active');
+    const body = document.getElementById('vocab-list-body');
+    body.innerHTML = '';
+    chs.forEach(ch => {
+        vocabLibrary[ch].forEach(w => {
+            const r = document.createElement('tr');
+            r.innerHTML = `<td style="color:var(--accent); font-weight:bold; text-align:left;">${w.l}</td><td style="text-align:left;">${w.e}</td><td>${ch}</td>`;
+            body.appendChild(r);
+        });
+    });
+}
+
+// --- THEME ---
+function saveBg() {
+    const url = document.getElementById('bg-url-input').value;
+    if(url) {
+        localStorage.setItem('latin-bg', url);
+        document.body.classList.add('custom-bg');
+        document.body.style.setProperty('--bg-img', `url('${url}')`);
+    }
+}
+
+window.onload = () => {
+    const saved = localStorage.getItem('latin-bg');
+    if(saved) {
+        document.body.classList.add('custom-bg');
+        document.body.style.setProperty('--bg-img', `url('${saved}')`);
+    }
     goHome();
 };
 </script>
