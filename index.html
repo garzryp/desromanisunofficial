@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>De Romanis - Precision Edition</title>
+    <title>De Romanis Unofficial</title>
     <style>
         :root {
             --bg: #0a0b10; --side: #11141d; --card: #161a23; --text: #d1d5db;
@@ -13,90 +13,98 @@
         body.custom-bg { background-size: cover; background-position: center; background-attachment: fixed; }
         body.custom-bg::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 0; }
 
-        .sidebar { width: 280px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index: 10; align-items: center; }
-        .sidebar h2 { font-size: 0.75rem; color: #6b7280; margin: 15px 0 5px 0; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; text-align: center; }
-        .nav-btn { background: #1c1f26; border: 1px solid var(--border); color: var(--text); text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: 0.2s; width: 90%; }
-        .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--side); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index: 10; align-items: center; }
+        .sidebar h1 { color: var(--accent); font-size: 1.1rem; margin-bottom: 20px; text-align: center; }
+        .sidebar h2 { font-size: 0.7rem; color: #6b7280; width: 100%; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-transform: uppercase; text-align: center; margin-top: 15px; }
+        .nav-btn { background: #1c1f26; border: 1px solid var(--border); color: var(--text); text-align: center; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; width: 95%; }
+        .nav-btn:hover { border-color: var(--accent); }
 
+        /* Main Container */
         .main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; z-index: 1; }
-        .container { background: var(--card); padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 100%; max-width: 900px; text-align: center; border: 1px solid var(--border); display: none; }
+        .container { background: var(--card); padding: 2rem; border-radius: 15px; width: 100%; max-width: 800px; text-align: center; border: 1px solid var(--border); display: none; }
         .container.active { display: block; }
 
-        #vocab-input { width: 90%; padding: 20px; font-size: 1.6rem; border-radius: 12px; border: 2px solid var(--border); background: #000; color: #fff; text-align: center; outline: none; }
-        .timer-bar { width: 100%; height: 8px; background: #2d333d; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        /* Vocab Styling */
+        #v-meta { font-size: 0.75rem; color: #000; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        #v-latin { font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 15px; }
+        #vocab-input { width: 70%; padding: 12px; font-size: 1.2rem; border-radius: 8px; border: 2px solid var(--border); background: #000; color: #fff; text-align: center; outline: none; }
+        .v-stat { color: #6b7280; font-size: 0.85rem; margin-top: 8px; }
+        .timer-bar { width: 70%; height: 6px; background: #2d333d; border-radius: 10px; margin: 15px auto 0 auto; overflow: hidden; display: none; }
         #timer-fill { width: 100%; height: 100%; background: var(--accent); transition: width 0.1s linear; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid var(--border); padding: 10px; text-align: center; }
-        th { background: #111827; color: var(--accent); font-size: 0.75rem; }
-        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; font-size: 1.1rem; }
-        
-        .correct { color: var(--ok) !important; border-bottom: 2px solid var(--ok) !important; }
-        .incorrect { color: var(--err) !important; border-bottom: 2px solid var(--err) !important; }
-        .ans-hint { font-size: 0.7rem; color: var(--err); display: block; font-weight: bold; }
+        /* Tables */
+        .table-wrap { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid var(--border); padding: 8px; text-align: center; font-size: 0.9rem; }
+        th { background: #111827; color: var(--accent); }
+        .grammar-input { width: 90%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: white; text-align: center; outline: none; }
+        .correct { color: var(--ok) !important; border-bottom-color: var(--ok) !important; }
+        .incorrect { color: var(--err) !important; border-bottom-color: var(--err) !important; }
+        .ans-hint { font-size: 0.7rem; color: var(--err); display: block; }
 
-        .btn-action { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px 5px; }
-        .slot-btn { padding: 8px 12px; border: 1px solid var(--border); background: #161b22; color: white; border-radius: 5px; cursor: pointer; }
-        .slot-btn.active { border-color: var(--accent); background: var(--accent); }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px 5px; }
+        .slot-btn { padding: 6px 10px; border: 1px solid var(--border); background: #161b22; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .slot-btn.active { background: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div onclick="goHome()" style="cursor:pointer; text-align:center">
-        <h1 style="color: var(--accent); margin:0; font-size: 1.4rem;">🏛️ De Romanis</h1>
-    </div>
-
-    <h2>Vocabulary</h2>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; width: 90%; gap: 5px;">
-        <button class="nav-btn" onclick="startVocab([1])">1</button><button class="nav-btn" onclick="startVocab([2])">2</button>
-        <button class="nav-btn" onclick="startVocab([3])">3</button><button class="nav-btn" onclick="startVocab([4])">4</button>
-        <button class="nav-btn" onclick="startVocab([5])">5</button><button class="nav-btn" onclick="startVocab([6])">6</button>
-        <button class="nav-btn" onclick="startVocab([7])">7</button><button class="nav-btn" onclick="startVocab([8])">8</button>
-    </div>
-    <button class="nav-btn" onclick="startVocab([1,2,3,4])">CH 1-4</button>
-    <button class="nav-btn" onclick="startVocab([5,6,7,8])">CH 5-8</button>
-
-    <h2>Tables</h2>
-    <button class="nav-btn" onclick="loadGrammar('nouns')">Noun Endings</button>
-    <button class="nav-btn" onclick="loadGrammar('hic')">Hic / Ille</button>
-    <button class="nav-btn" onclick="loadGrammar('qui')">Qui / Is</button>
+    <h1 onclick="goHome()" style="cursor:pointer">🏛️ DE ROMANIS UNOFFICIAL</h1>
     
-    <h2>Verb Systems</h2>
-    <button class="nav-btn" onclick="loadGrammar('pres_imp')">Pres / Imperf / Subj</button>
-    <button class="nav-btn" onclick="loadGrammar('perf_sys')">Perfect / Pluperfect</button>
-    <button class="nav-btn" onclick="loadGrammar('irreg')">Sum / Eo (All)</button>
+    <h2>Vocab</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 4px;">
+        <button class="nav-btn" onclick="startVocab([1])">CH 1</button><button class="nav-btn" onclick="startVocab([2])">CH 2</button>
+        <button class="nav-btn" onclick="startVocab([3])">CH 3</button><button class="nav-btn" onclick="startVocab([4])">CH 4</button>
+        <button class="nav-btn" onclick="startVocab([5])">CH 5</button><button class="nav-btn" onclick="startVocab([6])">CH 6</button>
+        <button class="nav-btn" onclick="startVocab([7])">CH 7</button><button class="nav-btn" onclick="startVocab([8])">CH 8</button>
+    </div>
+
+    <h2>Grammar</h2>
+    <button class="nav-btn" onclick="loadGrammar('nouns')">Nouns (1-3)</button>
+    <button class="nav-btn" onclick="loadGrammar('hic')">Hic / Ille (M+F)</button>
+    <button class="nav-btn" onclick="loadGrammar('is')">Is / Ea (Acc+)</button>
+    <button class="nav-btn" onclick="loadGrammar('qui')">Qui / Quae</button>
+    <button class="nav-btn" onclick="loadGrammar('eo')">Verb: Eo (Full)</button>
+    <button class="nav-btn" onclick="loadGrammar('sum')">Verb: Sum</button>
+    <button class="nav-btn" onclick="loadGrammar('perf')">Perfect System</button>
 </div>
 
 <div class="main">
     <div id="home-view" class="container active">
-        <h1>Mastery Hub</h1>
-        <div style="margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 15px;">
+        <h1>Welcome</h1>
+        <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px;">
+            <label style="cursor:pointer; font-weight:bold;">
+                <input type="checkbox" id="timer-toggle" onchange="toggleTimerPref()"> Enable Sudden Death (5s)
+            </label>
+        </div>
+        <div style="margin-bottom: 20px;">
             <h3>BG Slots</h3>
-            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px;">
+            <div style="display:flex; gap:8px; justify-content:center; margin-bottom:10px;">
                 <button class="slot-btn" id="s1" onclick="useSlot(1)">S1</button>
                 <button class="slot-btn" id="s2" onclick="useSlot(2)">S2</button>
                 <button class="slot-btn" id="s3" onclick="useSlot(3)">S3</button>
             </div>
-            <input type="text" id="bg-input" placeholder="URL..." style="width:60%; padding:10px; background:#000; color:#fff; border:1px solid var(--border);">
-            <button class="btn-action" onclick="saveToSlot()">Save</button>
+            <input type="text" id="bg-input" placeholder="Img URL..." style="width:50%; padding:8px; background:#000; color:#fff; border:1px solid var(--border);">
+            <button class="btn-action" onclick="saveBg()">Save</button>
         </div>
-        <h2 id="high-score-display">BEST STREAK: 0</h2>
+        <h3 id="best-display" style="color: #6b7280; font-size: 0.9rem;">BEST STREAK: 0</h3>
     </div>
 
     <div id="vocab-view" class="container">
-        <div style="display:flex; justify-content:space-between; color:var(--accent);">
-            <span id="v-count">0/0</span><span id="v-streak">STREAK: 0</span>
-        </div>
-        <div style="font-size: 3.5rem; font-weight:800; margin: 20px 0;" id="v-latin">---</div>
-        <div id="v-feedback" style="height:30px; font-weight:bold;"></div>
-        <input type="text" id="vocab-input" placeholder="Meaning..." autocomplete="off">
-        <div class="timer-bar"><div id="timer-fill"></div></div>
+        <div id="v-meta">WORD 1 OF 10</div>
+        <div id="v-latin">Word</div>
+        <div id="v-feedback" style="height:20px; font-weight:bold; font-size: 0.9rem; margin-bottom: 5px;"></div>
+        <input type="text" id="vocab-input" placeholder="..." autocomplete="off">
+        <div class="v-stat" id="v-streak">STREAK: 0</div>
+        <div class="v-stat" id="v-best">BEST STREAK: 0</div>
+        <div class="timer-bar" id="t-bar"><div id="timer-fill"></div></div>
     </div>
 
     <div id="grammar-view" class="container">
         <h2 id="g-title">Table</h2>
-        <div style="overflow-x:auto;"><table id="g-table"></table></div>
+        <div class="table-wrap"><table id="g-table"></table></div>
         <button class="btn-action" onclick="checkGrammar()">Check</button>
         <button class="btn-action" style="background:#4b5563;" onclick="resetGrammar()">Reset</button>
     </div>
@@ -104,62 +112,66 @@
 
 <script>
 const vocab = {
-    1:[{l:"amō",e:"love"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"fēmina",e:"woman"},{l:"fīlia",e:"daughter"},{l:"fīlius",e:"son"},{l:"homō",e:"man"},{l:"pater",e:"father"},{l:"māter",e:"mother"},{l:"rēx",e:"king"},{l:"rēgīna",e:"queen"}],
-    2:[{l:"arma",e:"arms"},{l:"bellum",e:"war"},{l:"capiō",e:"take"},{l:"corpus",e:"body"},{l:"flūmen",e:"river"},{l:"gladius",e:"sword"},{l:"ingēns",e:"huge"},{l:"perīculum",e:"danger"}],
-    3:[{l:"audiō",e:"hear"},{l:"auxilium",e:"help"},{l:"bonus",e:"good"},{l:"equus",e:"horse"},{l:"mare",e:"sea"},{l:"mōns",e:"mountain"},{l:"terra",e:"land"}],
-    4:[{l:"ager",e:"field"},{l:"aurum",e:"gold"},{l:"dōnum",e:"gift"},{l:"miser",e:"sad"},{l:"pecūnia",e:"money"},{l:"templum",e:"temple"}],
-    5:[{l:"agricola",e:"farmer"},{l:"aqua",e:"water"},{l:"cibus",e:"food"},{l:"fessus",e:"tired"},{l:"servus",e:"slave"},{l:"urbs",e:"city"}],
-    6:[{l:"amīcus",e:"friend"},{l:"annus",e:"year"},{l:"hōra",e:"hour"},{l:"locus",e:"place"},{l:"puella",e:"girl"},{l:"puer",e:"boy"}],
-    7:[{l:"cīvis",e:"citizen"},{l:"dominus",e:"master"},{l:"forum",e:"forum"},{l:"mūrus",e:"wall"},{l:"via",e:"road"}],
-    8:[{l:"clāmor",e:"shout"},{l:"epistula",e:"letter"},{l:"liber",e:"book"},{l:"magister",e:"teacher"},{l:"senex",e:"old man"}]
+    1:[{l:"amō",e:"love"},{l:"dea",e:"goddess"},{l:"deus",e:"god"},{l:"fēmina",e:"woman"}],
+    2:[{l:"arma",e:"arms"},{l:"bellum",e:"war"},{l:"capiō",e:"take"}],
+    3:[{l:"audiō",e:"hear"},{l:"auxilium",e:"help"}],
+    4:[{l:"ager",e:"field"},{l:"aurum",e:"gold"}],
+    5:[{l:"agricola",e:"farmer"},{l:"aqua",e:"water"}],
+    6:[{l:"amīcus",e:"friend"},{l:"annus",e:"year"}],
+    7:[{l:"cīvis",e:"citizen"},{l:"dominus",e:"master"}],
+    8:[{l:"clāmor",e:"shout"},{l:"liber",e:"book"}]
 };
 
 const grammar = {
-    'nouns': { t:"Noun Endings", h:["Case","1st","2nd","3rd"], r:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], k:[["a","us","-"],["am","um","em"],["ae","i","is"],["ae","o","i"],["a","o","e"],["ae","i","es"],["as","os","es"],["arum","orum","um"],["is","is","ibus"],["is","is","ibus"]]},
-    'hic': { t:"Hic & Ille (Masc Focus)", h:["Case","Hic","Haec","Hoc","Ille","Illa","Illud"], r:["Nom s","Acc s","Gen s","Dat s"], k:[["hic","haec","hoc","ille","illa","illud"],["hunc","hanc","hoc","illum","illam","illud"],["huius","huius","huius","illius","illius","illius"],["huic","huic","huic","illi","illi","illi"]]},
-    'qui': { t:"Qui & Is", h:["Case","Qui","Quae","Quod","Is","Ea","Id"], r:["Nom s","Acc s","Gen s","Dat s"], k:[["qui","quae","quod","is","ea","id"],["quem","quam","quod","eum","eam","id"],["cuius","cuius","cuius","eius","eius","eius"],["cui","cui","cui","ei","ei","ei"]]},
-    'pres_imp': { t:"Present Systems", h:["Person","Pres","Imperf","Imperf Subj (2nd PP)"], r:["1s","2s","3s","1p","2p","3p"], k:[["o","bam","rem"],["s","bas","res"],["t","bat","ret"],["mus","bamus","remus"],["tis","batis","retis"],["nt","bant","rent"]]},
-    'perf_sys': { t:"Perfect Systems (3rd PP)", h:["Person","Perfect","Pluperfect"], r:["1s","2s","3s","1p","2p","3p"], k:[["i","eram"],["isti","eras"],["it","erat"],["imus","eramus"],["istis","eratis"],["erunt","erant"]]},
-    'irreg': { t:"Sum & Eo", h:["Person","Sum Pres","Sum Imperf","Eo Pres","Eo Imperf"], r:["1s","2s","3s","1p","2p","3p"], k:[["sum","eram","eo","ibam"],["es","eras","is","ibas"],["est","erat","it","ibat"],["sumus","eramus","imus","ibamus"],["estis","eratis","itis","ibatis"],["sunt","erant","eunt","ibant"]]}
+    'nouns': { t:"Nouns", h:["Case","1st","2nd","3rd"], r:["Nom s","Acc s","Gen s","Dat s","Abl s","Nom p","Acc p","Gen p","Dat p","Abl p"], k:[["a","us","-"],["am","um","em"],["ae","i","is"],["ae","o","i"],["a","o","e"],["ae","i","es"],["as","os","es"],["arum","orum","um"],["is","is","ibus"],["is","is","ibus"]]},
+    'hic': { t:"Hic & Ille (M+F Only)", h:["Case","Hic M","Hic F","Ille M","Ille F"], r:["Nom s","Acc s","Nom p","Acc p"], k:[["hic","haec","ille","illa"],["hunc","hanc","illum","illam"],["hi","hae","illi","illae"],["hos","has","illos","illas"]]},
+    'is': { t:"Is (Accusative onwards)", h:["Case","Masc","Fem"], r:["Acc s","Dat s","Gen s","Abl s","Nom p","Acc p","Dat/Abl p","Gen p"], k:[["eum","eam"],["ei","ei"],["eius","eius"],["eo","ea"],["ei","eae"],["eos","eas"],["eis","eis"],["eorum","earum"]]},
+    'qui': { t:"Qui (M+F Only)", h:["Case","Sing Masc","Sing Fem","Plur Masc","Plur Fem"], r:["Nom","Acc"], k:[["qui","quae","qui","quae"],["quem","quam","quos","quas"]]},
+    'eo': { t:"Verb: Eo", h:["Person","Pres","Perf","Impf","Plup"], r:["1s","2s","3s","1p","2p","3p"], k:[["eo","ii","ibam","ieram"],["is","isti","ibas","ieras"],["it","iit","ibat","ierat"],["imus","iimus","ibamus","ieramus"],["itis","istis","ibatis","ieratis"],["eunt","ierunt","ibant","ierant"]]},
+    'sum': { t:"Verb: Sum", h:["Person","Present","Perfect","Pluperfect"], r:["1s","2s","3s","1p","2p","3p"], k:[["sum","fui","fueram"],["es","fuisti","fueras"],["est","fuit","fuerat"],["sumus","fuimus","fueramus"],["estis","fuistis","fueratis"],["sunt","fuerunt","fuerant"]]},
+    'perf': { t:"Perfect System (Active)", h:["Person","Perfect (-i)","Pluperfect (-eram)"], r:["1s","2s","3s","1p","2p","3p"], k:[["i","eram"],["isti","eras"],["it","erat"],["imus","eramus"],["istis","eratis"],["erunt","erant"]]}
 };
 
-let pool = [], vIdx = 0, streak = 0, best = 0, activeG = '', timer = null, isTiming = false, lock = false, slot = 1;
+let pool = [], vIdx = 0, streak = 0, best = 0, activeG = '', timer = null, lock = false, slot = 1;
 
+function toggleTimerPref() { localStorage.setItem('timer_on', document.getElementById('timer-toggle').checked); }
 function useSlot(n) {
     slot = n;
     document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`s${n}`).classList.add('active');
-    const val = localStorage.getItem(`rbg_${n}`);
+    const val = localStorage.getItem(`bg_${n}`);
     if(val) { document.body.style.backgroundImage = `url('${val}')`; document.body.classList.add('custom-bg'); }
     else { document.body.style.backgroundImage = ''; document.body.classList.remove('custom-bg'); }
 }
-function saveToSlot() { localStorage.setItem(`rbg_${slot}`, document.getElementById('bg-input').value); useSlot(slot); }
+function saveBg() { localStorage.setItem(`bg_${slot}`, document.getElementById('bg-input').value); useSlot(slot); }
 
 function startVocab(chs) {
     showView('vocab-view');
     pool = chs.flatMap(c => vocab[c]).sort(() => Math.random() - 0.5);
-    vIdx = 0; streak = 0; nextWord();
+    vIdx = 0; streak = 0; 
+    document.getElementById('v-best').innerText = "BEST STREAK: " + (localStorage.getItem('rbest') || 0);
+    nextWord();
 }
 
 function nextWord() {
     if(vIdx >= pool.length) return goHome();
-    document.getElementById('v-count').innerText = `${vIdx+1}/${pool.length}`;
+    document.getElementById('v-meta').innerText = `WORD ${vIdx+1} OF ${pool.length}`;
     document.getElementById('v-latin').innerText = pool[vIdx].l;
     document.getElementById('vocab-input').value = ""; document.getElementById('vocab-input').focus();
-    document.getElementById('v-feedback').innerText = ""; lock = false; resetTimer();
-}
-
-function resetTimer() { clearInterval(timer); isTiming = false; document.getElementById('timer-fill').style.width = "100%"; }
-
-document.getElementById('vocab-input').oninput = () => {
-    if(!isTiming && !lock) {
-        isTiming = true; let t = 5000;
+    document.getElementById('v-feedback').innerText = ""; lock = false;
+    
+    clearInterval(timer);
+    if(document.getElementById('timer-toggle').checked) {
+        document.getElementById('t-bar').style.display = "block";
+        let t = 5000;
         timer = setInterval(() => {
             t -= 100; document.getElementById('timer-fill').style.width = (t/5000)*100 + "%";
             if(t <= 0) handleWrong();
         }, 100);
+    } else {
+        document.getElementById('t-bar').style.display = "none";
     }
-};
+}
 
 document.getElementById('vocab-input').onkeydown = (e) => {
     if(e.key === 'Enter' && !lock) {
@@ -167,7 +179,7 @@ document.getElementById('vocab-input').onkeydown = (e) => {
         const ans = pool[vIdx].e.toLowerCase().split(',').map(x => x.trim());
         if(ans.some(a => val === a)) {
             clearInterval(timer); streak++; vIdx++;
-            if(streak > best) { best = streak; localStorage.setItem('rbest', best); }
+            if(streak > (localStorage.getItem('rbest') || 0)) localStorage.setItem('rbest', streak);
             document.getElementById('v-streak').innerText = "STREAK: " + streak;
             document.getElementById('v-feedback').innerText = "CORRECT";
             document.getElementById('v-feedback').style.color = "var(--ok)";
@@ -215,8 +227,8 @@ function resetGrammar() { loadGrammar(activeG); }
 function showView(id) { document.querySelectorAll('.container').forEach(c => c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 function goHome() { 
     showView('home-view'); 
-    best = localStorage.getItem('rbest') || 0; 
-    document.getElementById('high-score-display').innerText = "BEST STREAK: " + best; 
+    document.getElementById('best-display').innerText = "BEST STREAK: " + (localStorage.getItem('rbest') || 0);
+    document.getElementById('timer-toggle').checked = localStorage.getItem('timer_on') === 'true';
 }
 window.onload = () => { goHome(); useSlot(1); };
 </script>
