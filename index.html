@@ -70,7 +70,7 @@
     <button class="nav-btn" onclick="loadGrammar('qui')">Qui & Quae</button>
     <button class="nav-btn" onclick="loadGrammar('eo')">Eo</button>
     <button class="nav-btn" onclick="loadGrammar('sum')">Sum</button>
-    <button class="nav-btn" onclick="loadGrammar('noun')">Nouns</button>
+    <button class="nav-btn" onclick="loadGrammar('nouns')">Nouns</button>
 </div>
 
 <div class="main">
@@ -124,7 +124,7 @@ const vocabData = {
 };
 
 const grammar = {
-    'hic': { t:"Hic & Ille", h:["Hic M","Hic F","Ille M","Ille F"], r:["Nom s","Acc s","Nom p","Acc p","Neut"], k:[["hic","haec","ille","illa"],["hunc","hanc","illum","illam"],["hi","hae","illi","illae"],["hos","has","illos","illas"],["hoc","hoc","illud","illud"]]},
+    'hic': { t:"Hic & Ille", h:["Hic M","Hic F","Hic N","Ille M","Ille F","Ille N"], r:["Nom s","Acc s","Nom p","Acc p"], k:[["hic","haec","hoc","ille","illa","illud"],["hunc","hanc","hoc","illum","illam","illud"],["hi","hae","","illi","illae",""],["hos","has","","illos","illas",""]]},
     'is': { t:"Eum", h:["Masc","Fem"], r:["Acc s","Dat s","Gen s","Abl s","Nom p","Acc p","Dat/Abl p","Gen p"], k:[["eum","eam"],["ei","ei"],["eius","eius"],["eo","ea"],["ei","eae"],["eos","eas"],["eis","eis"],["eorum","earum"]]},
     'qui': { t:"Qui", h:["Sing Masc","Sing Fem","Sing Neut","Plur Masc","Plur Fem"], r:["Nom","Acc"], k:[["qui","quae","quod","qui","quae"],["quem","quam","quod","quos","quas"]]},
     'eo': { t:"Eo", h:["Pres","Perf","Impf","Plup"], r:["1s","2s","3s","1p","2p","3p"], k:[["eo","ii","ibam","ieram"],["is","isti","ibas","ieras"],["it","iit","ibat","ierat"],["imus","iimus","ibamus","ieramus"],["itis","istis","ibatis","ieratis"],["eunt","ierunt","ibant","ierant"]]},
