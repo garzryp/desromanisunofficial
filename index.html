@@ -71,6 +71,9 @@
     <button class="nav-btn" onclick="loadGrammar('eo')">Eo</button>
     <button class="nav-btn" onclick="loadGrammar('sum')">Sum</button>
     <button class="nav-btn" onclick="loadGrammar('nouns')">Nouns</button>
+    <button class="nav-btn" onclick="loadGrammar('verbs')">Verbs</button>
+    <button class="nav-btn" onclick="loadGrammar('perf')">Perfect & Pluperfect
+    <button class="nav-btn" onclick="loadGrammar('subjunctives')">Subjunctive</button>
 </div>
 
 <div class="main">
@@ -129,7 +132,10 @@ const grammar = {
     'qui': { t:"Qui", h:["Sing Masc","Sing Fem","Sing Neut","Plur Masc","Plur Fem"], r:["Nom","Acc"], k:[["qui","quae","quod","qui","quae"],["quem","quam","quod","quos","quas"]]},
     'eo': { t:"Eo", h:["Pres","Perf","Impf","Plup"], r:["1s","2s","3s","1p","2p","3p"], k:[["eo","ii","ibam","ieram"],["is","isti","ibas","ieras"],["it","iit","ibat","ierat"],["imus","iimus","ibamus","ieramus"],["itis","istis","ibatis","ieratis"],["eunt","ierunt","ibant","ierant"]]},
     'sum': { t:"Sum", h:["Pres","Perf","Plup"], r:["1s","2s","3s","1p","2p","3p"], k:[["sum","fui","fueram"],["es","fuisti","fueras"],["est","fuit","fuerat"],["sumus","fuimus","fueramus"],["estis","fuistis","fueratis"],["sunt","fuerunt","fuerant"]]},
-    'nouns': { t:"Nouns", h:["1st","2nd","3rd"], r:["Sing Nom","Sing Voc","Sing Acc","Sing Dat","Sing Gen","Plu Nom","Plu Voc","Plu Acc","Plu Dat","Plu Gen"], k:[["a","us",""],["a","e",""],["am","um","em"],["ae","o","i"],["ae","i","is"],["ae","i","es"],["ae","i","es"],["as","os","es"],["is","is","ibus"],["arum","orum","um"]]}
+    'nouns': { t:"Nouns", h:["1st","2nd","3rd"], r:["Sing Nom","Sing Voc","Sing Acc","Sing Dat","Sing Gen","Plu Nom","Plu Voc","Plu Acc","Plu Dat","Plu Gen"], k:[["a","us",""],["a","e",""],["am","um","em"],["ae","o","i"],["ae","i","is"],["ae","i","es"],["ae","i","es"],["as","os","es"],["is","is","ibus"],["arum","orum","um"]]},
+    'verbs': { t:"Verbs", h:["1st","2nd","3rd","4th"], r:["1st Sing Pres","2nd Sing Pres","3rd Sing Pres","1st Plu Pres","2nd Plu Pres","3rd Plu Pres","1st Sing Impf","2nd Sing Impf","3rd Sing Impf","1st Plu Impf","2nd Plu Impf","3rd Plu Impf"], k:[["o","eo","o","io"],["as","es","is","is"],["at","et","it","it"],["amus","emus","imus","imus"],["atis","etis","itis","itis"],["ant","ent","unt","iunt"],["abam","ebam","ebam","iebam"],["abas","ebas","ebas","iebas"],["abat","ebat","ebat","iebat"],["abamus","ebamus","ebamus","iebamus"],["abatis","ebatis","ebatis","iebatis"],["abant","ebant","ebant","iebant"]]},
+    'perf': { t:"Perfect & Pluperfect", h:["Perf","Plup"], r:["1st Sing","2nd Sing","3rd Sing","1st Plu","2nd Plu","3rd Plu"], k:[["i","eram"],["isti","eras"],["it","erat"],["imus","eramus"],["isits","eratis"],["erunt","erant"]]},
+    'subjunctives': { t:"Subjunctives", h:["Impf","Plup"], r:["1st Sing","2nd Sing","3rd Sing","1st Plu","2nd Plu","3rd Plu"], k:[["rem","issem"],["res","isses"],["ret","isset"],["remus","issemus"],["retis","issetis"],["rent","issent"]]}
 };
 
 let pool = [], vIdx = 0, streak = 0, timer = null, lock = false, slot = 1;
