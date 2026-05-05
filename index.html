@@ -84,16 +84,6 @@
                 <input type="checkbox" id="timer-toggle" onchange="toggleTimerPref()"> Enable Sudden Death (5s)
             </label>
         </div>
-        <div>
-            <h3>Background Slots</h3>
-            <div style="display:flex; gap:8px; justify-content:center; margin-bottom:10px;">
-                <button class="slot-btn" id="s1" onclick="useSlot(1)">S1</button>
-                <button class="slot-btn" id="s2" onclick="useSlot(2)">S2</button>
-                <button class="slot-btn" id="s3" onclick="useSlot(3)">S3</button>
-            </div>
-            <input type="text" id="bg-input" placeholder="Img URL..." style="width:50%; padding:8px; background:#000; color:#fff; border:1px solid var(--border);">
-            <button class="btn-action" onclick="saveBg()">Save</button>
-        </div>
     </div>
 
     <div id="vocab-view" class="container">
@@ -141,15 +131,6 @@ const grammar = {
 let pool = [], vIdx = 0, streak = 0, timer = null, lock = false, slot = 1;
 
 function toggleTimerPref() { localStorage.setItem('sd_timer', document.getElementById('timer-toggle').checked); }
-function useSlot(n) {
-    slot = n;
-    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`s${n}`).classList.add('active');
-    const val = localStorage.getItem(`bg_${n}`);
-    if(val) { document.body.style.backgroundImage = `url('${val}')`; document.body.classList.add('custom-bg'); }
-    else { document.body.style.backgroundImage = ''; document.body.classList.remove('custom-bg'); }
-}
-function saveBg() { localStorage.setItem(`bg_${slot}`, document.getElementById('bg-input').value); useSlot(slot); }
 
 function startVocab(chs) {
     showView('vocab-view');
