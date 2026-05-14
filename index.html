@@ -79,22 +79,34 @@
 
 <div class="main">
     <div id="home-view" class="container active">
-        <h1>Home</h1>
-        <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px;">
-            <label style="cursor:pointer; font-weight:bold;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;"> 🏛️</h1>
+        <p style="color: #9ca3af; margin-bottom: 30px;">Hi!</p>
+    
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--accent);">
+                <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent);">Best Streak</div>
+                <div id="home-best-streak" style="font-size: 1.8rem; font-weight: bold;">0</div>
+            </div>
+            <div style="background: rgba(52, 211, 153, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--ok);">
+                <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--ok);">Status</div>
+                <div style="font-size: 1.2rem; font-weight: bold; margin-top: 5px;">Ready to Study</div>
+            </div>
+        </div>
+    
+        <div style="text-align: left; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+            <h3 style="margin-top: 0; font-size: 0.9rem; color: var(--accent);">MODES & CONTROLS</h3>
+            <ul style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.6;">
+                <li>⌨️ <strong>Enter:</strong> Submit answer / Next word</li>
+                <li>🕒 <strong>Sudden Death:</strong> You have 5 seconds per word.</li>
+                <li>🏛️ <strong>Title:</strong> Click the sidebar header to return here anytime.</li>
+            </ul>
+        
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
+            
+            <label style="cursor:pointer; font-weight:bold; display: flex; align-items: center; gap: 10px;">
                 <input type="checkbox" id="timer-toggle" onchange="toggleTimerPref()"> Enable Sudden Death (5s)
             </label>
         </div>
-    </div>
-
-    <div id="vocab-view" class="container">
-        <div id="v-meta">WORD 1 OF 10</div>
-        <div id="v-latin">Word</div>
-        <div id="v-feedback" style="height:20px; font-weight:bold; font-size: 0.9rem; margin-bottom: 5px;"></div>
-        <input type="text" id="vocab-input" placeholder="Write translation" autocomplete="off">
-        <div class="v-stat" id="v-streak">STREAK: 0</div>
-        <div class="v-stat" id="v-best">BEST STREAK: 0</div>
-        <div class="timer-bar" id="t-bar"><div id="timer-fill"></div></div>
     </div>
 
     <div id="grammar-view" class="container">
@@ -127,7 +139,7 @@ const grammar = {
     'verbs': { t:"Verbs", h:["1st","2nd","3rd","4th"], r:["1st Sing Pres","2nd Sing Pres","3rd Sing Pres","1st Plu Pres","2nd Plu Pres","3rd Plu Pres","1st Sing Impf","2nd Sing Impf","3rd Sing Impf","1st Plu Impf","2nd Plu Impf","3rd Plu Impf"], k:[["o","eo","o","io"],["as","es","is","is"],["at","et","it","it"],["amus","emus","imus","imus"],["atis","etis","itis","itis"],["ant","ent","unt","iunt"],["abam","ebam","ebam","iebam"],["abas","ebas","ebas","iebas"],["abat","ebat","ebat","iebat"],["abamus","ebamus","ebamus","iebamus"],["abatis","ebatis","ebatis","iebatis"],["abant","ebant","ebant","iebant"]]},
     'perf': { t:"Perfect & Pluperfect", h:["Perf","Plup"], r:["1st Sing","2nd Sing","3rd Sing","1st Plu","2nd Plu","3rd Plu"], k:[["i","eram"],["isti","eras"],["it","erat"],["imus","eramus"],["istis","eratis"],["erunt","erant"]]},
     'subjunctives': { t:"Subjunctives", h:["Impf","Plup"], r:["1st Sing","2nd Sing","3rd Sing","1st Plu","2nd Plu","3rd Plu"], k:[["rem","issem"],["res","isses"],["ret","isset"],["remus","issemus"],["retis","issetis"],["rent","issent"]]},
-    'infinitive': { t:"Infinitive +", h:["1st","2nd","3rd","4th"], r:["Inf","Imp Sing","Imp Plu","Pres Part"], k:[["are","ere","ere","ire"],["","","",""],["ate","ete","ete","ite"],["ans","ens","ens","iens"]]},
+    'infinitive': { t:"Infinitive +", h:["1st","2nd","3rd","4th"], r:["Inf","Imp Sing","Imp Plu","Pres Part"], k:[["are","ere","ere","ire"],["a","e","e","i"],["ate","ete","ete","ite"],["ans","ens","ens","iens"]]},
 };
 
 let pool = [], vIdx = 0, streak = 0, timer = null, lock = false, slot = 1;
@@ -214,6 +226,8 @@ function resetGrammar() { loadGrammar(activeG); }
 function showView(id) { document.querySelectorAll('.container').forEach(c => c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 function goHome() { 
     showView('home-view'); 
+    const best = localStorage.getItem('vb_best') || 0;
+    document.getElementById('home-best-streak').innerText = best;
     document.getElementById('timer-toggle').checked = localStorage.getItem('sd_timer') === 'true';
 }
 window.onload = () => { goHome(); useSlot(1); };
