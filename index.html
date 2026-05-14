@@ -81,7 +81,7 @@
     <div id="home-view" class="container active">
         <h1 style="font-size: 2.5rem; margin-bottom: 10px;"> 🏛️</h1>
         <p style="color: #9ca3af; margin-bottom: 30px;">Hi!</p>
-    
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
             <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--accent);">
                 <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent);">Best Streak</div>
@@ -92,7 +92,7 @@
                 <div style="font-size: 1.2rem; font-weight: bold; margin-top: 5px;">Ready to Study</div>
             </div>
         </div>
-    
+
         <div style="text-align: left; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
             <h3 style="margin-top: 0; font-size: 0.9rem; color: var(--accent);">MODES & CONTROLS</h3>
             <ul style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.6;">
@@ -100,18 +100,38 @@
                 <li>🕒 <strong>Sudden Death:</strong> You have 5 seconds per word.</li>
                 <li>🏛️ <strong>Title:</strong> Click the sidebar header to return here anytime.</li>
             </ul>
-        
+
             <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
-            
+
             <label style="cursor:pointer; font-weight:bold; display: flex; align-items: center; gap: 10px;">
                 <input type="checkbox" id="timer-toggle" onchange="toggleTimerPref()"> Enable Sudden Death (5s)
             </label>
         </div>
     </div>
 
+    <div id="vocab-view" class="container">
+        <div id="v-meta">WORD 1 OF 10</div>
+        <div id="v-latin">Word</div>
+
+        <div id="v-feedback" style="height:30px; font-weight:bold; font-size: 1.1rem; margin-bottom: 10px;"></div>
+
+        <input type="text" id="vocab-input" placeholder="Type translation..." autocomplete="off">
+
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+            <div class="v-stat" id="v-streak">STREAK: 0</div>
+            <div class="v-stat" id="v-best" style="opacity: 0.6;">BEST: 0</div>
+        </div>
+
+        <div class="timer-bar" id="t-bar" style="width: 80%; margin: 25px auto 0 auto;">
+            <div id="timer-fill"></div>
+        </div>
+    </div>
+
     <div id="grammar-view" class="container">
         <h2 id="g-title">Table</h2>
-        <div class="table-wrap"><table id="g-table"></table></div>
+        <div class="table-wrap">
+            <table id="g-table"></table>
+        </div>
         <button class="btn-action" onclick="checkGrammar()">Check</button>
         <button class="btn-action" style="background:#4b5563;" onclick="resetGrammar()">Reset</button>
     </div>
